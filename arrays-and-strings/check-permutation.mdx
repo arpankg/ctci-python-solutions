@@ -1,0 +1,97 @@
+import CTCIPostContainer from "../../../components/ctciPostContainer";
+
+export const meta = {
+  title: "Check Permutation",
+  number: "1.2",
+  chapter: "arrays-and-strings",
+  lesson: "check-permutation",
+  next: "arrays-and-strings/urlify",
+  prev: "arrays-and-strings/is-unique",
+};
+
+export default ({ children }) => (
+  <CTCIPostContainer meta={meta}>{children}</CTCIPostContainer>
+);
+
+# Check Permutation
+
+## Cracking the Coding Interview (CTCI) 1.2
+
+
+<br />
+
+## Question
+
+The input is two strings. Check if the first string is a permutation of the second string.
+
+```
+Input - "wazup bro", " orbpuwaz"
+Output - True
+
+Input - "hiiiya", "hiya"
+Output - False
+```
+
+<details>
+  <summary>Brute Force Solution</summary>
+
+
+Sort the characters in both strings. Then, check if the strings are equivalent.
+
+```python
+def checkPermutation(s1, s2):
+    s1, s2 = sorted(s1), sorted(s2)
+    return s1 == s2
+```
+
+The time complexity is $$O(n \log n)$$. The space complexity is $$O(n)$$ since we're creating new strings for `s1` and `s2`.
+
+</details>
+
+
+<br />
+
+<details>
+  <summary>Optimal Solution</summary>
+
+
+1. Create a dictionary
+2. Iterate through the first string
+   - if the char is in the dictionary, increment 1 to it's value
+   - if the char is not in the dictionary, set it's value to 1
+
+After the iteration ends, we will a dictionary where the keys are the letters in the first string, and the values are the number of times that letter appears in the first string.
+
+Now, we iterate through the second string and _subtract_ 1 for each character from our dictionary's values. If we come across a character that's not in our dictionary we can immediately return False, since the two strings would have all the same characters if they were permutations.
+
+3. Iterate through the second string
+
+   - if the char is in the dictionary, decrement 1
+   - if the char is not in the dictionary, return `False`
+
+   Check if the value in the dictionary for the char is 0. If it is, delete the char from the dictionary, since we're done comparing the counts for that char between both strings.
+
+4. return `True` if the length of the dictionary is 0. That means that all the chars in the first string had an equivalent count in the second string and that the second string didn't have any extra chars that weren't in the first string.
+
+```python
+def checkPermutation(s1, s2):
+    count = {}
+    for i in s1:
+        if i in count:
+            count[i] += 1
+        else:
+            count[i] = 1
+    for i in s2:
+        if i in count:
+            count[i] -= 1
+        else:
+            return False
+        if count[i] == 0:
+            del count[i]
+    return True
+```
+
+The time complexity is $$O(n)$$. The space complexity is $$O(n)$$.
+
+</details>
+

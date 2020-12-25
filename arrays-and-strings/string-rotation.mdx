@@ -1,0 +1,79 @@
+import CTCIPostContainer from "../../../components/ctciPostContainer";
+
+export const meta = {
+  title: "String Rotation",
+  number: "1.9",
+  chapter: "arrays-and-strings",
+  lesson: "string-rotation",
+  next: "linked-lists/remove-duplicates",
+  prev: "arrays-and-strings/zero-matrix",
+};
+
+export default ({ children }) => (
+  <CTCIPostContainer meta={meta}>{children}</CTCIPostContainer>
+);
+
+# String Rotation
+
+## Cracking the Coding Interview (CTCI) 1.9
+
+<br />
+
+## Question
+
+You are given two strings as input. Write a function to check if one string is a rotation of the
+other string. An example of a rotation is
+
+<br />
+
+`"CodingInterview", "erviewCodingInt"`
+
+You will also be given a function `isSubstring` that will return a boolean that is `True` if one string is a substring of the other. You can only call this function once.
+
+```
+Input - "CodingInterview", "erviewCodingInt"
+Output - True
+
+Input - "Test", "est"
+Output - False
+```
+
+<details>
+  <summary>Solution</summary>
+
+
+Let's label the input strings `x1` and `x2`. If x1 is a rotation of x2 then there must be a rotation point. An example is if `x1` is `"erviewCodingInt"` and `x2` is `"CodingInterview"`. Then, the rotation point is after `"CodingInt"`. We can imagine spliting `x2` at the rotation point into `a` and `b` where `a` is `"CodingInt"` and `b` is `"erview"`.
+
+<br />
+
+Then, `x1` is `ba` and `x2` is `ab`.
+
+<br />
+
+`x1 = erviewCodingInt = b + a = erview + CodingInt`
+
+`x2 = CodingInterview = a + b = CodingInt + erview`
+
+<br />
+
+So, we want to see if we can split `x2` into `a` and `b` so that `ba = x1` and `ab = x2`.
+
+<br />
+
+We can also see that `ba` will always be a substring of `ab + ab`, as there is a `ba` after the first `a`. Therefore, `x1` will always be a substring of `x2 + x2`.
+
+<br />
+
+We can check if `x1` is a rotation of `x2` by seeing if `x1` is a substring of `x2 + x2`.
+
+```python
+def isRotation(x1, x2):
+    return isSubstring(x1, x2 + x2)
+```
+
+The time complexity of this code is $$O(n + m)$$ where $$n$$ is the length of `x1` and $$m$$ is the length of `x2`. We are assuming that `isSubstring` runs in $$O(n + m)$$ time. Concatinating `x2 + x2` will take $$O(m)$$ time.
+
+Therefore, the time complexity is $$O(n + m)$$. The space complexity is $$O(n + m)$$ as well.
+
+</details>
+

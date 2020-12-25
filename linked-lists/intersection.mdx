@@ -1,0 +1,201 @@
+import CTCIPostContainer from "../../../components/ctciPostContainer";
+
+export const meta = {
+  title: "Intersection",
+  number: "2.7",
+  chapter: "linked-lists",
+  lesson: "intersection",
+  next: "linked-lists/loop-detection",
+  prev: "linked-lists/palindrome",
+};
+
+export default ({ children }) => (
+  <CTCIPostContainer meta={meta}>{children}</CTCIPostContainer>
+);
+
+# Intersection
+
+## Cracking the Coding Interview (CTCI) 2.7
+
+<br />
+
+## Question
+
+You are given two singly linked lists. Write a function to determine if the two lists intersect. If they do intersect, return the node at which the two lists intersect. Otherwise, return `None`.
+
+```
+Input -
+1 -> 2 -> 3 ->
+               4 -> 5 -> 6
+          2 ->
+
+Output - 4 -> 5 -> 6
+(the output is the node with the value 4)
+```
+
+<details>
+  <summary>Brute Force Solution</summary>
+
+
+We can solve this by using a set. We first iterate through the first linked list and put every node in the set.
+
+<br />
+
+We then iterate through the second linked list and check if the node is in the set. If it is, then we return the node.
+
+```python
+def intersection(l1, l2):
+    nodeSet = set()
+    cur = l1
+
+    while cur:
+        nodeSet.add(cur)
+        cur = cur.next
+
+    cur = l2
+
+    while cur:
+        if cur in nodeSet:
+            return cur
+
+    return None
+```
+
+The time complexity is $$O(n)$$ and the space complexity is $$O(n)$$.
+
+</details>
+
+
+<br />
+
+<details>
+  <summary>Optimzed Solution</summary>
+
+
+The unoptimzed solution requires linear space time. Can we do better? We can!
+
+<br />
+
+We will use two pointers, `p1` and `p2`. `p1` points to the head of `l1` and `p2` points to the head of `l2`. We'll traverse both linked lists. When `p1` reaches the tail of `l1`, then we will redirect `p1` to the head of `l2`. We do the same for `p2`. When `p2` reaches the tail of `l2`, we will redirect it to `l1`. If the pointers are ever pointing to the same node (`p1 == p2`), then that is the intersecting node. Let's talk about why this approach works.
+
+<br /> <br />
+
+Let's say we have two linked lists that intersect. `p1` points to the head of the first linked list and `p2` points to the head of the second.
+
+<img
+  src="/assets/ctci/linked-lists/intersection/intersection.001.jpeg"
+  alt="intersecting linked lists"
+  height={470}
+  width={830}
+  layout="responsive"
+  loading="eager"
+/>
+
+We move `p1` and `p2` to `p1.next` and `p2.next` and traverse both linked lists. `p1` has traveled 1 node and `p2` has traveled 1 node.
+
+<img
+  src="/assets/ctci/linked-lists/intersection/intersection.002.jpeg"
+  alt="intersecting linked lists"
+  height={470}
+  width={830}
+  layout="responsive"
+/>
+
+We move `p1` and `p2` to `p1.next` and `p2.next` and continue traversing both linked lists. `p1` has traveled 2 nodes and `p2` has traveled 2 nodes.
+
+<img
+  src="/assets/ctci/linked-lists/intersection/intersection.003.jpeg"
+  alt="intersecting linked lists"
+  height={470}
+  width={830}
+  layout="responsive"
+/>
+
+We move `p1` and `p2` to `p1.next` and `p2.next` and continue traversing both linked lists. `p1` has traveled 3 nodes and `p2` has traveled 3 nodes.
+
+<img
+  src="/assets/ctci/linked-lists/intersection/intersection.004.jpeg"
+  alt="intersecting linked lists"
+  height={470}
+  width={830}
+  layout="responsive"
+/>
+
+We move `p1` and `p2` to `p1.next` and `p2.next` and continue traversing both linked lists. `p1` has traveled 4 nodes and `p2` has traveled 4 nodes.
+
+<img
+  src="/assets/ctci/linked-lists/intersection/intersection.005.jpeg"
+  alt="intersecting linked lists"
+  height={470}
+  width={830}
+  layout="responsive"
+/>
+
+We move `p1` and `p2` to `p1.next` and `p2.next` and continue traversing both linked lists. `p1` has traveled 5 nodes and `p2` has traveled 5 nodes.
+
+<img
+  src="/assets/ctci/linked-lists/intersection/intersection.006.jpeg"
+  alt="intersecting linked lists"
+  height={470}
+  width={830}
+  layout="responsive"
+/>
+
+We move `p1` and `p2` to `p1.next` and `p2.next` and continue traversing both linked lists. `p1` has traveled 6 nodes and `p2` has traveled 6 nodes.
+
+<img
+  src="/assets/ctci/linked-lists/intersection/intersection.007.jpeg"
+  alt="intersecting linked lists"
+  height={470}
+  width={830}
+  layout="responsive"
+/>
+
+We move `p1` and `p2` to `p1.next` and `p2.next` and continue traversing both linked lists. `p1` has traveled 7 nodes and `p2` has traveled 7 nodes.
+
+<img
+  src="/assets/ctci/linked-lists/intersection/intersection.008.jpeg"
+  alt="intersecting linked lists"
+  height={470}
+  width={830}
+  layout="responsive"
+/>
+
+We move `p1` and `p2` to `p1.next` and `p2.next`. Now `p1` and `p2` point to the same node! This node is the intersection node of the two linked lists. Both nodes have traveled 8 nodes.
+
+<img
+  src="/assets/ctci/linked-lists/intersection/intersection.009.jpeg"
+  alt="intersecting linked lists"
+  height={470}
+  width={830}
+  layout="responsive"
+/>
+
+Both `p1` and `p2` will be guaranteed to meet at the intersection point with this approach, since they're both traversing the same amount of nodes. If there is no intersection point, then both `p1` and `p2` will eventually be at `None` and we can return `None` (meaning there is no intersection point).
+
+```python
+def intersection(l1, l2):
+    p1 = l1
+    p2 = l2
+    p1Switch = False
+    p2Switch = False
+
+    while (p1 or not p1Switch) and (p2 or not p2Switch):
+        if p1 == p2:
+            return p1
+        p1 = p1.next
+        p2 = p2.next
+
+        if p1 is None and not p1Switch:
+            p1 = l2
+            p1Switch = True
+
+        if p2 is None and not p2Switch:
+            p2 = l1
+            p2Switch = True
+```
+
+The time complexity is $$O(n)$$ and the space complexity is $$O(1)$$.
+
+</details>
+

@@ -1,0 +1,115 @@
+import CTCIPostContainer from "../../../components/ctciPostContainer";
+
+export const meta = {
+  title: "Palindrome",
+  number: "2.6",
+  chapter: "linked-lists",
+  lesson: "palindrome",
+  next: "linked-lists/intersection",
+  prev: "linked-lists/sum-list",
+};
+
+export default ({ children }) => (
+  <CTCIPostContainer meta={meta}>{children}</CTCIPostContainer>
+);
+
+# Palindrome
+
+## Cracking the Coding Interview (CTCI) 2.6
+
+<br />
+
+## Question
+
+You are given a linked list. Write a function that checks if the values in the linked list will form a palindrome. In other words, if you reverse the linked list, the values will still be the same.
+
+```
+Input - 1 -> 2 -> 2 -> 1
+Output - True
+
+Input - 1 -> 2 -> 3 -> 2 -> 1
+Output - True
+
+Input - 1 -> 2
+Output - False
+```
+
+<details>
+  <summary>Solution</summary>
+
+
+Let's ignore the Linked List component for a second. If you just had a string, how could you tell if it was a palindrome?
+
+<br />
+
+You could just create a copy of the string and reverse it. Then, compare that to the original string.
+
+<br />
+
+If they're equivalent, then you have a palindrome.
+
+<br />
+
+Therefore, with a linked list input, we could just copy the linked list, reverse it and check if it's equivalent to the original linked list.
+
+<br />
+
+The issue with this approach is that it requires extra space ($$O(n)$$ space complexity). Can we solve this question using no extra space?
+
+<br />
+
+We can, by iterating through half of the linked list, and then reversing the second half. Then, we compare the reversed second half with the original first half and check to make sure they're both equivalent. If the linked list had an odd length, then we just ignore the middle element.
+
+```python
+def reverseLL(head):
+    prev = None
+    while head:
+        temp = head.next
+        head.next = prev
+        prev = head
+        head = temp
+    return prev
+
+def palindrome(head):
+    # An empty LL is a palindrome
+    if head is None:
+        return True
+
+    # get length of linked list
+    length = 0
+    cur = head
+    while cur:
+        length += 1
+        cur = cur.next
+
+    # find halfway point
+    if length % 2 == 0:
+        halfWay = length // 2
+    elif length % 2 == 1:
+        halfWay = length // 2 + 1
+
+    # reverse second half
+    cur = head
+    for _ in range(halfWay - 1):
+        cur = cur.next
+
+    secondHalf = cur.next
+    cur.next = None
+
+    secondHalf = reverseLL(secondHalf)
+
+    # compare both halves
+    firstHalf = head
+    while firstHalf and secondHalf:
+        if firstHalf.val != secondHalf.val:
+            return False
+        firstHalf = firstHalf.next
+        secondHalf = secondHalf.next
+
+    return True
+```
+
+The time complexity is $$O(n)$$ and the space complexity is $$O(1)$$.
+
+</details>
+

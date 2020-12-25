@@ -1,0 +1,66 @@
+import CTCIPostContainer from "../../../components/ctciPostContainer";
+
+export const meta = {
+  title: "Delete Middle Nodes",
+  number: "2.3",
+  chapter: "linked-lists",
+  lesson: "delete-middle-node",
+  next: "linked-lists/partition",
+  prev: "linked-lists/return-kth-to-last",
+};
+
+export default ({ children }) => (
+  <CTCIPostContainer meta={meta}>{children}</CTCIPostContainer>
+);
+
+# Delete Middle Node
+
+## Cracking the Coding Interview (CTCI) 2.3
+
+<br />
+
+## Question
+
+You're given a pointer to a node in a singly linked list. The node will NOT be the last node in the singly linked list. Write a function that deletes only that node in the linked list in-place. You don't have to return anything since the deletion is in-place.
+
+```
+Linked List - 1 -> 2 -> 3 -> 4 -> 5 -> 3
+Input - 4 -> 5 -> 3
+Result after running function - 1 -> 2-> 3 -> 5 -> 3
+```
+
+<details>
+  <summary>Hint</summary>
+
+
+We can't solve this by the standard way of deleting a node in a linked list.
+
+<br />
+
+In order to do that, we'd typically need a pointer to the node _right before_ the node we want to delete. Then we can set the previous node's `next` to `next.next` and that would remove the node from the linked list.
+
+<br />
+
+We don't have access to the previous node. Can you think of another way to delete the node our pointer is pointing at?
+
+</details>
+
+
+<br />
+
+<details>
+  <summary>Solution</summary>
+
+
+We need to modify the original linked list and delete the node that the pointer is pointing at. We can't delete the node because we don't have a pointer to the previous node (check hint). Therefore, we can mimic a deletion by copying over the value from the next node into the node we want to delete. Then, we can just delete the next node in the standard fashion.
+
+```python
+def deleteNode(node):
+    node.val = node.next.val
+    node.next = node.next.next
+```
+
+The time complexity is $$O(1)$$ and the space complexity is $$O(1)$$.
+
+</details>
+

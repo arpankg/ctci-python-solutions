@@ -1,0 +1,58 @@
+import CTCIPostContainer from "../../../components/ctciPostContainer";
+
+export const meta = {
+  title: "Return Kth To Last",
+  number: "2.2",
+  chapter: "linked-lists",
+  lesson: "return-kth-to-last",
+  next: "linked-lists/delete-middle-node",
+  prev: "linked-lists/remove-duplicates",
+};
+
+export default ({ children }) => (
+  <CTCIPostContainer meta={meta}>{children}</CTCIPostContainer>
+);
+
+# Return Kth to Last Node
+
+## Cracking the Coding Interview (CTCI) 2.2
+
+<br />
+
+## Question
+
+You're given a Linked List. Write a function to find the Kth to last node in that Linked List.
+
+```
+Input - 1 -> 2 -> 3 -> 4 -> 5 -> None, k = 2
+Output - 4
+```
+
+<details>
+  <summary>Solution</summary>
+
+
+We can utilize a `slow` and `fast` pointer here. The key is that the `fast` pointer should be `k` nodes ahead of the `slow` pointer. Once the `fast` pointer reaches the end of the Linked List, we can return the node that the `slow` pointer is pointing to.
+
+```python
+def returnKthToLast(head, k):
+    fast = head
+    for _ in range(k):
+        if fast:
+            fast = fast.next
+        else:
+            return None
+    slow = head
+    # fast is now k nodes ahead of slow
+
+    while fast:
+        fast = fast.next
+        slow = slow.next
+
+    return slow
+```
+
+The time complexity is $$O(n)$$ and the space complexity is $$O(1)$$.
+
+</details>
+

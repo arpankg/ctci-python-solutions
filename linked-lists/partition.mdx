@@ -1,0 +1,70 @@
+import CTCIPostContainer from "../../../components/ctciPostContainer";
+
+export const meta = {
+  title: "Partition",
+  number: "2.4",
+  chapter: "linked-lists",
+  lesson: "partition",
+  next: "linked-lists/sum-list",
+  prev: "linked-lists/delete-middle-node",
+};
+
+export default ({ children }) => (
+  <CTCIPostContainer meta={meta}>{children}</CTCIPostContainer>
+);
+
+# Partition
+
+## Cracking the Coding Interview (CTCI) 2.4
+
+<br />
+
+## Question
+
+You are given an unsorted linked list and an integer (we'll call this the key). Write a function that partitions the linked list around the key. All the nodes with values that are less than the key will come before all the nodes with values that are greater than or equal to the key.
+
+```
+Input - 5 -> 6 -> 3 -> 5 -> 4 -> 10 -> None, key = 4
+Output - 3 -> 5 -> 6 -> 5 -> 4 -> 10 -> None
+```
+
+**The order of the nodes on either side of the partition doesn't matter.**
+
+<br />
+
+<details>
+  <summary>Solution</summary>
+
+
+We can solve this by using two dummy nodes. One dummy node is `lessThan` and it's the start for a linked list that contains all the nodes with values less than the key. The other dummy node is `greaterEqual` and is the start for a linked list that contains all the nodes with values greater than or equal to the key.
+
+<br />
+
+We can then traverse the linked list and add the nodes to either the `lessThan` linked list or the `greaterEqual` linked list.
+
+After traversing the linked list, we append the `greaterEqual` linked list to the back of the `lessThan` linked list and return the head of the `lessThan` linked list.
+
+```python
+def partition(head, key):
+    lessThan = Node(None)
+    greaterEqual = Node(None)
+    headL = lessThan
+    headG = greaterEqual
+
+    while head:
+        if head.val < key:
+            headL.next = head
+            headL = headL.next
+        else:
+            headG.next = head
+            headG = headG.next
+        head = head.next
+
+    headL.next = greaterEqual.next
+    return lessThan.next
+```
+
+The time complexity is $$O(n)$$ and the space complexity is $$O(1)$$. The space complexity is constant since the only new nodes we create are the dummy nodes, `lessThan` and `greaterEqual`. We will always create two dummy nodes
+
+</details>
+

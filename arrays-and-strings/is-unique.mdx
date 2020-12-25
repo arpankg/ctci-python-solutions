@@ -1,0 +1,119 @@
+import CTCIPostContainer from "../../../components/ctciPostContainer";
+
+export const meta = {
+  title: "Is Unique",
+  number: "1.1",
+  chapter: "arrays-and-strings",
+  lesson: "is-unique",
+  next: "arrays-and-strings/check-permutation",
+  prev: "",
+};
+
+export default ({ children }) => (
+  <CTCIPostContainer meta={meta}>{children}</CTCIPostContainer>
+);
+
+# Is Unique
+
+## Cracking the Coding Interview (CTCI) 1.1
+
+<br />
+
+## Question
+
+You are given a string. Write a function to determine if all of the characters in the string appear only once.
+
+Your function shouldn't care about capitalization. `A` is the same as `a`.
+
+```
+Input - "heLlo"
+Output - False
+
+Input - "hey"
+Output - True
+```
+
+<details>
+  <summary>Brute Force Solution</summary>
+
+
+For each character in the input string, check every other character and make sure they're different.
+
+```python
+def isUnique(s):
+    s = s.lower()
+    # c -> counter, l -> letter
+    for c1, l1  in enumerate(s):
+        for c2, l2 in enumerate(s):
+            if c1 == c2:
+                continue
+            if l1 == l2:
+                return False
+    return True
+```
+
+We implement this with two loops. The first loop iterates through every character in the string.
+
+For each iteration, we will check to make sure that this character does not appear again in the string. We do this with the nested loop.
+
+The time complexity is $$O(n^2)$$. The space complexity is $$O(n)$$ since we're creating a new string on line 3.
+
+</details>
+
+
+<br />
+
+<details>
+  <summary>Optimized Solution</summary>
+
+
+Instead of using two loops, we can use a set. As we iterate through the string, we check if the current letter is in the set.
+
+If it is, then we return `False`. Otherwise, we add the current letter to the set and continue iterating.
+
+```python
+def isUnique(s):
+    s = s.lower()
+    seen = set()
+    for i in s:
+      if i in seen:
+          return False
+    return True
+```
+
+The time complexity is $$O(n)$$ and the space complexity is $$O(n)$$.
+
+</details>
+
+
+<br />
+
+## Follow Up
+
+What if you're not allowed to use any additional data structures?
+
+<br />
+
+<details>
+  <summary>Follow Up Solution</summary>
+
+
+The brute force solution doesn't use any extra data structures, but can we do better than $$O(n^2)$$ time complexity?
+
+Instead of using two for loops, what if we sorted the string and then just checked if any of the characters were equivalent to the character before them?
+
+We're taking advantage of the fact that if you sort the string, all identical characters will be placed right next to each other.
+
+```python
+def isUnique(s):
+    s = sorted(s.lower())
+    for i in range(1, len(s)):
+        if s[i] == s[i - 1]:
+            return False
+    return True
+```
+
+The time complexity is $$O(n \log n)$$ and the space complexity is $$O(n)$$.
+
+</details>
+

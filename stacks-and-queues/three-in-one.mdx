@@ -1,0 +1,58 @@
+import CTCIPostContainer from "../../../components/ctciPostContainer";
+import Iframe from "react-iframe";
+
+export const meta = {
+  title: "Three in One",
+  chapter: "stacks-and-queues",
+  lesson: "three-in-one",
+  next: "stacks-and-queues/stack-min",
+  prev: "linked-lists/loop-detection",
+};
+
+export default ({ children }) => (
+  <CTCIPostContainer meta={meta}>{children}</CTCIPostContainer>
+);
+
+# Three in One
+
+## Cracking the Coding Interview
+
+<br />
+
+## Question
+
+Write an class that mimics three stacks. You can only use a single array as the underlying data structure.
+
+```
+Example
+a = ThreeStack()
+a.push(0, 4) # stack 0, push 4
+a.push(1, 5) # stack 1, push 4
+a.push(2, 7) # stack 2, push 5
+a.push(0, 6) # stack 0, push 6
+print(a.pop(0)) # 6
+print(a.pop(1)) # 5
+print(a.pop(2)) # 7
+```
+
+<details>
+  <summary>Solution</summary>
+
+
+We need to modify the original linked list and delete the node that the pointer is pointing at. We can't delete the node because we don't have a pointer to the previous node (check hint). Therefore, we can mimic a deletion by copying over the value from the next node into the node we want to delete. Then, we can just delete the next node in the standard fashion.
+
+```python
+class ThreeStack:
+    def __init__(self):
+        self.items = [None for _ in range(30)]
+        self.insert = [0, 10, 20]
+
+    def
+
+
+```
+
+The time complexity is $$O(1)$$ and the space complexity is $$O(1)$$.
+
+</details>
+

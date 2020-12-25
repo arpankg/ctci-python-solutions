@@ -1,0 +1,90 @@
+import CTCIPostContainer from "../../../components/ctciPostContainer";
+import Image from "next/image";
+
+export const meta = {
+  title: "Loop Detection",
+  number: "2.8",
+  chapter: "linked-lists",
+  lesson: "loop-detection",
+  next: "stacks-and-queues/three-in-one",
+  prev: "linked-lists/intersection",
+};
+
+export default ({ children }) => (
+  <CTCIPostContainer meta={meta}>{children}</CTCIPostContainer>
+);
+
+# Loop Detection
+
+## Cracking the Coding Interview (CTCI) 2.8
+
+<br />
+
+## Question
+
+You are given a linked list as input. The linked list may or may not have a cycle. Write a function that returns the node at the beginning of the cycle (if it exists) or `None`.
+
+```
+Input - 1 -> 2 -> 3 -> 4 -> 2 (same 2 as earlier)
+Output - 2
+```
+
+<Image
+  src="/assets/ctci/linked-lists/loop-detection/loop-detection.jpeg"
+  alt="intersecting linked lists"
+  height="470"
+  width="830"
+  layout="responsive"
+/>
+
+<details>
+  <summary>Brute Force Solution</summary>
+
+
+We can solve this by using a set. We just iterate through the linked list and check if the current node is in our set (have we already seen this node)? If `true`, then we return the node. Otherwise, we add the node to the set and continue iterating. If we reach the end of the linked list, then there obviously isn't a cycle and we can return `None`.
+
+```python
+def loopDetection(head):
+    seenNodes = set()
+    cur = head
+
+    while cur:
+        if cur in seenNodes:
+            return cur
+        else:
+            seenNodes.add(cur)
+            cur = cur.next
+```
+
+The time complexity is $$O(n)$$ and the space complexity is $$O(n)$$.
+
+</details>
+
+
+<br />
+
+<details>
+  <summary>Optimized Solution</summary>
+
+
+The fastest we can do is $$O(n)$$ time complexity. But can we improve space complexity?
+
+<br />
+
+We can! We can solve this in constant space using Floyd's Cycle Detection Algorithm. This algorithm is pretty simple to understand, but it's best if done with a video. Therefore, we'll let [Gayle explain it herself!](https://www.youtube.com/watch?v=MFOAbpfrJ8g).
+
+```python
+def intersection(head):
+    slow, fast = head.next, head.next.next
+
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+        if slow == fast:
+            return slow
+```
+
+The time complexity is $$O(n)$$ and the space complexity is $$O(1)$$.
+
+</details>
+

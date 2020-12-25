@@ -1,0 +1,100 @@
+import CTCIPostContainer from "../../../components/ctciPostContainer";
+
+export const meta = {
+  title: "One Away",
+  number: "1.5",
+  chapter: "arrays-and-strings",
+  lesson: "one-away",
+  next: "arrays-and-strings/string-compression",
+  prev: "arrays-and-strings/palindrome-permutation",
+};
+
+export default ({ children }) => (
+  <CTCIPostContainer meta={meta}>{children}</CTCIPostContainer>
+);
+
+# One Away
+
+## Cracking the Coding Interview (CTCI) 1.5
+
+<br />
+
+## Question
+
+You are given two strings as input. You want to find out if these two strings are at most one edit away from each other.
+
+An edit is defined as either
+
+- inserting a character
+- removing a character
+- replacing a character
+
+```
+Input - "whale", "wrale"
+Output - True
+
+Input - "rake", "care"
+Output - False
+
+Input - "rake", "rake"
+Output - True
+```
+
+<details>
+  <summary>Solution</summary>
+
+
+We can first check the lengths of the two strings. If the lengths differ by more than 1, we can immediately return False since we can insert 1 character at most.
+
+Then, we iterate through both strings and compare them character by character.
+
+- if the characters are the same, continue on to the next character for both strings
+- elif the characters are different and we haven't made an edit yet
+  - if the lengths are the same
+    - try replacing the char at string A with the char at string B
+  - elif the lengths are different
+    - try deleting one char from the longer string
+  - make a note that we've made an edit
+- elif the characters are different and we have made an edit
+  - return False
+
+```python
+def oneAway(s1, s2):
+    if abs(len(s1) - len(s2)) > 1:
+        return False
+    # p1 is pointer for s1
+    # p2 is pointer for s2
+    p1, p2 = 0, 0
+    madeEdit = False
+    while p1 < len(s1) and p2 < len(s2):
+        if s1[p1] == s2[p2]:
+            p1 += 1
+            p2 += 1
+        elif not madeEdit:
+            madeEdit = True
+            if len(s1) == len(s2):
+                p1 += 1
+                p2 += 1
+                # this represents a replacement.
+                # we "pretend" there's a replacement
+                # and now we can view s1[p1] as equal
+                # to s2[p2] and increment p1, p2
+            elif len(s1) < len(s2):
+                p2 += 1
+                # we "delete" the char at p2
+                # and increment p2 while not
+                # incrementing p1
+            elif len(s1) > len(s2):
+                p1 += 1
+                # same as above, except for p1 now
+        else:
+            return False
+    return True
+```
+
+The time complexity is $$O(n)$$ where $$n$$ is the length of s1. That's because our loop is incrementing `p1` and `p2` (unless we have to make an edit, which can only happen at most once) and the lengths of `s1` and `s2` must be at most 1 apart, making them the same under Big O.
+
+The space complexity is $$O(1)$$
+
+</details>
+

@@ -1,0 +1,56 @@
+import CTCIPostContainer from "../../../components/ctciPostContainer";
+
+export const meta = {
+  title: "Remove Duplicates",
+  number: "2.1",
+  chapter: "linked-lists",
+  lesson: "remove-duplicates",
+  next: "linked-lists/return-kth-to-last",
+  prev: "arrays-and-strings/string-rotation",
+};
+
+export default ({ children }) => (
+  <CTCIPostContainer meta={meta}>{children}</CTCIPostContainer>
+);
+
+# Remove Duplicates
+
+## Cracking the Coding Interview (CTCI) 2.1
+
+<br />
+
+## Question
+
+You're given an unsorted linked list as input. Write a function that removes duplicate items.
+
+```
+Input - 1 -> 2 -> 1 -> 5 -> 2 -> None
+Output - 1 -> 2 -> 5 -> None
+```
+
+<details>
+  <summary>Solution</summary>
+
+
+We can solve this by using a set. We traverse the linked list and check if the `next` node's value in inside the set. If it is, then we modify the `cur` node's `next` value to `cur.next.next`. In other words, we remove the `next` node from the linked list. Otherwise, we add `cur.next`'s value to the set and set `cur` to `cur.next` to continue the iteration.
+
+```python
+def removeDuplicates(head):
+    if head is None:
+        return head
+    items = set()
+    items.add(head.val)
+    cur = head
+    while cur and cur.next:
+        if cur.next.val in items:
+            cur.next = cur.next.next
+        else:
+            set.add(cur.next.val)
+            cur = cur.next
+    return head
+```
+
+The time complexity is $$O(n)$$ and the space complexity is $$O(n)$$.
+
+</details>
+

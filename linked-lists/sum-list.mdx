@@ -1,0 +1,98 @@
+import CTCIPostContainer from "../../../components/ctciPostContainer";
+
+export const meta = {
+  title: "Sum List",
+  number: "2.5",
+  chapter: "linked-lists",
+  lesson: "return-kth-to-last",
+  next: "linked-lists/palindrome",
+  prev: "linked-lists/partition",
+};
+
+export default ({ children }) => (
+  <CTCIPostContainer meta={meta}>{children}</CTCIPostContainer>
+);
+
+# Sum List
+
+## Cracking the Coding Interview (CTCI 2.5)
+
+<br />
+
+## Question
+
+You are given two numbers where each number is represented by a linked list. Each node contains a single digit of the number and the digits are stored in reverse order, such that the 1's digit is at the head.
+
+```
+123 = 3 -> 2 -> 1
+```
+
+Write a function that takes these two linked lists and returns the sum of the numbers as a linked list.
+
+```
+Input - 9 -> 1 -> 6, 4 -> 3 -> 2
+Output - 3 -> 5 -> 8
+```
+
+<details>
+  <summary>Solution</summary>
+
+
+This question can get extremely tricky with edge cases if we're not careful. Some edge cases include carry overs, numbers of different length, or one (or both) of the linked lists being `None`.
+
+<br />
+
+A very elegant solution that deals with all of these edge cases is if you create a new linked list that represents the sum. Initiate the first node in the sum to have a value of `0` and check if `l1` is currently pointing to a node. If it is, add the value for `l1`'s node to our `newNode` and set the `l1` pointer to the next node in that first number's linked list. Then, we check if `l2` is pointing at a node. If it is, we add the value for `l2`'s node to `newNode`. Now, we have to make sure that our `newNode`'s sum is less than 10. Remember that each node represents a single digit.
+
+<br />
+
+If `newNode`'s value is greater than 9, we will have a `carryOver` boolean that we'll set to True. This will tell us to increment the next node in our sum by 1. We can now decrement `newNode`'s value by 10.
+
+<br />
+
+Now, we continue on doing the same as long as either
+
+- `l1` is pointing at a node
+- `l2` is pointing at a node
+- `carryOver` is True
+
+```python
+class Node:
+    def __init__(self, val):
+        self.val = val
+        self.next = None
+
+def sumList(l1, l2):
+    sumList = Node(None)
+    cur = sumList
+    carryOver = False
+
+    while l1 or l2 or carryOver:
+        newNode = Node(0)
+
+        if l1:
+            newNode.val += l1.val
+            l1 = l1.next
+
+        if l2:
+            newNode.val += l2.val
+            l2 = l2.next
+
+        if carryOver:
+            newNode.val += 1
+            carryOver = False
+
+        if newNode.val > 9:
+            carryOver = True
+            newNode.val -= 10
+
+        cur.next = newNode
+        cur = cur.next
+
+    return sumList.next
+```
+
+The time complexity is $$O(n)$$ and the space complexity is $$O(n)$$.
+
+</details>
+
