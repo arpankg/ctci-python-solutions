@@ -182,6 +182,9 @@ Detailed explanations to the coding interview questions in CTCI. The solutions a
 | 17.25 | Word Rectangle | ❌ |
 | 17.26 | Sparse Similarity | ❌ |
 
+**If you find this useful, a Github star would be much appreciated!!**  ⭐ ⭐ ⭐ 
+
+
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue to discuss what you want to change.
