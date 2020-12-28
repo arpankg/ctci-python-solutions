@@ -188,3 +188,10 @@ Detailed explanations to the coding interview questions in CTCI. The solutions a
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue to discuss what you want to change.
+
+
+## Contributors
+
+Huge thanks to our contributors!
+
+* [Farhan Juneja](https://www.linkedin.com/in/farhan-juneja/)
