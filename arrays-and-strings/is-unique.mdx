@@ -61,7 +61,7 @@ If it is, then we return `False`. Otherwise, we add the current letter to the se
 ```python
 def isUnique(s):
     s = s.lower()
-    seen = set()
+    seen = set(s)
     for i in s:
       if i in seen:
           return False
