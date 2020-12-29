@@ -11,9 +11,10 @@
 Given a directed graph, design an algorithm to find out whether there is a route between two nodes
 
 Example graph
+
 <img
   src="./assets/route-between-nodes.png"
-  alt="intersecting linked lists"
+  alt="Directed graph"
   height="200"
   width="400"
   layout="responsive"
@@ -22,17 +23,17 @@ Example graph
 ```
 
 Input -  start = A, end = F
-output - True
+Output - True
 
 Input - start = A, end = C
-output - False
+Output - False
 
 ```
 
 <details>
   <summary>BFS Solution</summary>
 
-Start a breadth-fist-search from the start node check if the end node is found, keep track of visited nodes to avoide cycles and repetion of nodes.
+Start a breadth-fist-search from the start node, check if the end node is found. keep track of visited nodes to avoide cycles and repetition of nodes.
     
 ```python
 from queue import Queue
@@ -47,8 +48,7 @@ def search(graph: DefaultDict ,start : str,end : str) -> bool:
         curr_node = q.get()
         if curr_node == end:
             return True
-        else:
-            visited_nodes.add(curr_node)
+        visited_nodes.add(curr_node)
         for adj_node in graph[curr_node]:
             if adj_node not in visited_nodes:
                 q.put(adj_node)
@@ -62,7 +62,7 @@ Space complexity O(n), a node might be connected to all the nodes, in that case 
 <details>
   <summary>DFS Solution</summary>
 
-Start a depth-first-search from the start check if the end node is found, keep track of visited nodes to avoid cycles and repetition of nodes.
+Start a depth-first-search from the start, check if the end node is found. keep track of visited nodes to avoid cycles and repetition of nodes.
 
 ```python
 from queue import Queue
