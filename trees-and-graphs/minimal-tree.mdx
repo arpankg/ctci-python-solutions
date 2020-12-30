@@ -53,6 +53,8 @@ elements greater than the mid.
 
 ```python
 from typing Import List
+
+
 class Node:
     def __init__(self, data):
         self.data = data
@@ -60,13 +62,13 @@ class Node:
         self.left = None
 
 
-def build_minimal_height_BST(nums: List[int], left: int, right: int) -> Node:
+def build_minimal_height_bst(nums: List[int], left: int, right: int) -> Node:
     if left > right:
         return None
     mid = left + (right - left) // 2
     root = Node(nums[mid])
-    root.left = build_minimal_height_BST(nums, left, mid - 1)
-    root.right = build_minimal_height_BST(nums, mid + 1, right)
+    root.left = build_minimal_height_bst(nums, left, mid - 1)
+    root.right = build_minimal_height_bst(nums, mid + 1, right)
     return root
 ```
 Time complexity O(n), we visit all the elements of the array once.
