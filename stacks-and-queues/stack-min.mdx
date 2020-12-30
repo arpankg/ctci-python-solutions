@@ -1,12 +1,71 @@
-import CTCIPostContainer from "../../../components/ctciPostContainer"
+# Stack Min
 
-export const meta = {
-    title: "Stack Min",
-    chapter: "stacks-and-queues",
-    lesson: "stack-min",
-    next: "stacks-and-queues/stack-of-plates",
-    prev: "stacks-and-queues/three-in-one"
-}
+## Cracking the Coding Interview
 
-export default ({children}) => (<CTCIPostContainer meta={meta}>{children}</CTCIPostContainer>)
+<br />
 
+## Question
+
+Implement a stack that has a `min` function, that returns the minimum element.
+
+The stack should also have a `push` and `pop` function.
+
+`push`, `pop` and `min` should all operate in $$O(1)$$ time.
+
+<details>
+  <summary>Solution</summary>
+  
+  We can solve this by keeping track of minimum element in our stack for each item that gets pushed.
+
+  If a smaller item gets pushed, then that becomes the new minimum until we get an even smaller item.
+
+  If the current minimum gets popped off the stack, then the previous minimum becomes the new minimum for our stack.
+
+  We can keep keep track of the minimum by using a tuple.
+
+  Whenever the user pushes an item on to our stack, we'll push a tuple containing the item and the current minimum.
+
+  Here's an example
+
+  ```
+  Example
+  a = MinStack()
+  a.push(10)
+  # our internal MinStack representation is [(10, 10)]
+  a.push(4)
+  # our internal MinStack representation is [(10, 10), (4, 4)]
+  a.push(6)
+  # our internal MinStack representation is [(10, 10), (4, 4), (6, 4)]
+  ```
+
+  The first item in our tuple is the element at that position in the stack.
+  
+  The second item in our tuple will keep track of the minimum to that point.
+
+  Here's the Python 3 implementation.
+
+  ```python
+  class MinStack:
+      
+      def __init__(self):
+          self.items = []
+  
+      def push(self, item):
+          if len(self.items) == 0:
+              self.items.append((item, item))
+          else:
+              self.items.append((item, min(item, self.items[-1][1])))
+
+      def pop(self):
+          if len(self.items) > 0:
+              return self.items.pop()[0]
+
+      def min(self):
+          if len(self.items) > 0:
+              return self.items[-1][1]
+  ```
+
+  The time complexity for `push`, `pop` and `min` are all $$O(1)$$
+
+  The space complexity is $$O(n)$$
+</details>
