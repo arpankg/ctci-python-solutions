@@ -62,9 +62,11 @@ If it is, then we return `False`. Otherwise, we add the current letter to the se
 def isUnique(s):
     s = s.lower()
     seen = set()
-    for i in s:
-      if i in seen:
-          return False
+    for c in s:
+        if c in seen:
+            return False
+        else:
+            seen.add(c)
     return True
 ```
 
