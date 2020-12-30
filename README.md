@@ -194,5 +194,6 @@ Pull requests are welcome. For major changes, please open an issue to discuss wh
 
 Huge thanks to our contributors!
 
-* [Farhan Juneja](https://www.linkedin.com/in/farhan-juneja/)
 * [Gan3i](https://www.linkedin.com/in/ganeshnageshappa/)
+* [Farhan Juneja](https://www.linkedin.com/in/farhan-juneja/)
+
