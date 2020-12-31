@@ -34,7 +34,7 @@ Detailed explanations to the coding interview questions in CTCI. The solutions a
 
 | Problem Number | Problem Name | Status |
 | --- | --- | --- |
-| 3.1 | Three In One | ❌ |
+| 3.1 | Three In One | [Read Solution ✅](https://quastor.org/cracking-the-coding-interview/stacks-and-queues/three-in-one) |
 | 3.2 | Stack Min | ❌ |
 | 3.3 | Stack of Plates | [Read Solution ✅](https://quastor.org/cracking-the-coding-interview/stacks-and-queues/stack-of-plates)|
 | 3.4 | Queue via Stacks | ❌ |

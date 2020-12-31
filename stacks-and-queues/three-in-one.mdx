@@ -1,8 +1,8 @@
-# Read the Solution [Here](https://quastor.org/cracking-the-coding-interview/stacks-and-queues/three-in-one)
+# Read the Solution [here](https://quastor.org/cracking-the-coding-interview/stacks-and-queues/three-in-one)
 
 # Three in One
 
-## Cracking the Coding Interview
+## Cracking the Coding Interview (CTCI) 3.1
 
 <br />
 
@@ -27,17 +27,31 @@ print(a.pop(2)) # 7
 
   We can implement our stacks with **fixed** capacity.
 
+  <br />
+
   Once a stack is filled, a user cannot push more items to it without first popping off items.
 
-  We'll implement the stacks using a single array that has a fixed capacity of *n*.
+  <br />
+
+  We'll implement the stacks using a single array that has a fixed capacity of $$n$$.
+
+  <br />
 
   The first stack will use elements [0, $$\frac{n}{3}$$).
 
+  <br />
+
   The second stack will use elements [$$\frac{n}{3}$$, $$\frac{2n}{3}$$).
+
+  <br />
 
   The third stack will use elements [$$\frac{2n}{3}$$, n).
 
+  <br />
+
   We will maintain 2 lists of pointers. The first list will keep track of where the tops are for each of the 3 stacks.
+
+  <br />
 
   The second list will keep track of the limits for each of the three stacks.
 
@@ -78,5 +92,8 @@ print(a.pop(2)) # 7
 
 </details>
 
-<br />
+
+
+
+
 
