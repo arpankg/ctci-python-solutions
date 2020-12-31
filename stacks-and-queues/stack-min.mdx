@@ -1,29 +1,37 @@
+# Read the Solution [here](https://quastor.org/cracking-the-coding-interview/stacks-and-queues/stack-min)
+
 # Stack Min
 
-## Cracking the Coding Interview
+## Cracking the Coding Interview (CTCI) 3.2
 
 <br />
 
 ## Question
 
-Implement a stack that has a `min` function, that returns the minimum element.
+Implement a stack that has a `min` function, that returns the minimum element. The stack should also have a `push` and `pop` function.
 
-The stack should also have a `push` and `pop` function.
+<br />
 
 `push`, `pop` and `min` should all operate in $$O(1)$$ time.
 
+<br />
+
 <details>
   <summary>Solution</summary>
-  
-  We can solve this by keeping track of minimum element in our stack for each item that gets pushed.
 
+  We can solve this by keeping track of minimum element in our stack for each item that gets pushed.<br />
+  
   If a smaller item gets pushed, then that becomes the new minimum until we get an even smaller item.
+
+  <br />
 
   If the current minimum gets popped off the stack, then the previous minimum becomes the new minimum for our stack.
 
-  We can keep keep track of the minimum by using a tuple.
+  <br />
 
-  Whenever the user pushes an item on to our stack, we'll push a tuple containing the item and the current minimum.
+  We can keep keep track of the minimum by using a tuple. Whenever the user pushes an item on to our stack, we'll push a tuple containing the item and the current minimum.
+
+  <br />
 
   Here's an example
 
@@ -38,9 +46,9 @@ The stack should also have a `push` and `pop` function.
   # our internal MinStack representation is [(10, 10), (4, 4), (6, 4)]
   ```
 
-  The first item in our tuple is the element at that position in the stack.
+  The first item in our tuple is the element at that position in the stack. The second item in our tuple will keep track of the minimum to that point.
   
-  The second item in our tuple will keep track of the minimum to that point.
+  <br />
 
   Here's the Python 3 implementation.
 
@@ -66,6 +74,8 @@ The stack should also have a `push` and `pop` function.
   ```
 
   The time complexity for `push`, `pop` and `min` are all $$O(1)$$
+
+  <br />
 
   The space complexity is $$O(n)$$
 </details>
