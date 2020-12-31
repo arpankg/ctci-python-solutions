@@ -36,7 +36,7 @@ Detailed explanations to the coding interview questions in CTCI. The solutions a
 | --- | --- | --- |
 | 3.1 | Three In One | ❌ |
 | 3.2 | Stack Min | ❌ |
-| 3.3 | Stack of Plates | ❌ |
+| 3.3 | Stack of Plates | [Read Solution ✅](https://quastor.org/cracking-the-coding-interview/stacks-and-queues/stack-of-plates)|
 | 3.4 | Queue via Stacks | ❌ |
 | 3.5 | Sort Stack | ❌ |
 | 3.6 | Animal Shelter | ❌ |
