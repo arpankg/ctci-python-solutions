@@ -1,0 +1,92 @@
+# Stack of Plates
+
+## Cracking the Coding Interview
+
+<br />
+
+## Question
+
+Imagine a stack of plates. If the stack gets too high then it will become unstable and topple over.
+
+<br />
+
+Therefore, when stacking plates we create a new stack after a certain number of plates.
+
+<br />
+
+Implement a data structure that mimics this behavior. `SetOfStacks` should be composed of several stacks and it should create a new stack once the previous one exceeds a certain threshold.
+
+<br />
+
+`SetOfStacks.push()` and `SetOfStacks.pop()` should behave identically to if the data structure was just a single stack.
+
+<details>
+  <summary>Solution</summary>
+  
+  We'll design the class to have a `push` and `pop` method, so the API is identical to a normal stack.
+
+  <br />
+
+  In order to instantiate the class, the user will have the option of providing the capacity of the stacks. The capacity must be a positive number (greater than 0). We set the default capacity to an arbitrary number (we picked 10).
+
+  <br />
+
+  We will represent the data structure internally with a 2 dimensional list. Everytime one list reaches capacity, we'll add another.
+
+  <br />
+
+  The list allows us to do `push` and `pop` operations in $$O(1)$$ time.
+
+  <br />
+
+  With our `push` method, we first check to make sure that our current stack (the last list in our 2-D list) is not at capacity.
+
+  <br />
+
+  If it is, then we add a new empty list as our current stack.
+
+  <br />
+
+  Then, we can just append the value to our current stack.
+
+  <br />
+
+  In `pop`, we first check to make sure that there is at least one value in our data structure. If not, we throw an `IndexError`.
+
+  <br />
+
+  Otherwise, we can just pop the last value and return it.
+
+  <br />
+  
+  
+  ```python
+  class SetOfStacks:
+      def __init__(self, capacity = 10):
+          if capacity < 1:
+              raise ValueError("capacity must be at least 1")
+          
+          self.capacity = capacity
+          self.stacks = [[]]
+      
+      def push(self, val):
+          if len(self.stacks[-1]) == self.capacity:
+              self.stacks.append([])
+          
+          self.stacks[-1].append(val)
+      
+      def pop(self):
+          if len(self.stacks[-1]) == 0:
+              if len(self.stacks) == 1:
+                  raise IndexError("pop from empty stack")
+              else:
+                  self.stacks.pop()
+          
+          return self.stacks[-1].pop()
+  ```
+
+  <br />
+
+  `push` and `pop` both take $$O(1)$$ time.
+
+</details>
