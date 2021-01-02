@@ -54,14 +54,14 @@ def get_list_of_depths(root: BinaryTreeNode) -> List[LinkedList]:
     return list_of_depths
 
 ```
-Time complexity O(n), we touch each nodes once
+Time complexity O(n), we touch each nodes once.
 Space complexity O(n) dominated by list_of_depths.
 </details>
 <details>
   <summary>Solution Two</summary>
 
 Since we have to build linked list for nodes at each level we can build it with any kind of traversal as long as we know wich level nodes are in. We can 
-use a variable depth and pass depth+1 to next level to keep track of level, this solution is combination of dfs pre-order travel.
+use a variable depth and pass depth+1 to next level to keep track of depth, this solution is combination of dfs pre-order travel.
 
 ```python
 
@@ -88,7 +88,9 @@ Space complexity O(n) dominated by list_of_depths.
 </details> 
 <details>
     <summary>Driver Code</summary>
+
 ```python
+
 from typing import List
 
 
@@ -98,10 +100,12 @@ class LinkedList:
         self.tail = None
         self.size = 0
 
+
 class ListNode:
     def __init__(self, data):
         self.data = data
         self.next = None
+
 
 def insert(self, data):
     if not self.head:
@@ -110,11 +114,11 @@ def insert(self, data):
     else:
         self.tail.next = self.ListNode(data)
         self.tail = self.tail.next
-    self.size +=1
+    self.size += 1
+
 
 def __len__(self):
     return self.size
-
 
 
 class BinaryTreeNode:
@@ -122,6 +126,7 @@ class BinaryTreeNode:
         self.data = data
         self.right = right
         self.left = left
+
 
 root = BinaryTreeNode("A")
 root.left = BinaryTreeNode("B")
@@ -132,15 +137,18 @@ root.left.left.left = BinaryTreeNode("G")
 root.right.right = BinaryTreeNode("C")
 root.right.right.left = BinaryTreeNode("H")
 root.right.right.right = BinaryTreeNode("I")
-    
+
 for linked_list in get_list_of_depths_bfs(root):
     result = []
     curr = linked_list.head
     while curr:
         result.append(curr.data.data)
         curr = curr.next
-    
+
     print(result)
 
-*Linked list implementaion is naive.
+```
+*Linked list implementation is naive
+
 </details>
+
