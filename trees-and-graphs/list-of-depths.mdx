@@ -1,0 +1,146 @@
+# Read the solution [Here](https://quastor.org/cracking-the-coding-interview/trees-and-graph/list-of-depths)
+
+# List Of Depths
+
+## Cracking The Coding Interview 4.3
+
+<br/>
+
+# Question
+
+Given a binary tree, design an algorithm which creates a linked list of all the nodes at each depth (if you have a tree with
+depth D, you will have D linked lists).
+
+```
+Input -    2
+          / \
+         1   3
+Output - [[1],[2 -> 3]]
+
+InPut -                A
+                     /   \
+                   B       C
+                 /   \      \
+                D     E      F
+              /            /   \
+             G            H      I
+
+Input -  [[A],[B -> C],[D -> E -> F], [G -> H -> I]]
+
+```
+
+<details>
+  <summary>Solution One</summary>
+
+Simple way to think of it is we have to build the a linked list for nodes at each level so, traverse the tree level by level and build the
+linked list. linked list built for depth D can be used to build the linked list of nodes at depth D + 1. this solution is also a slight modification
+of BFS.
+    
+```python
+
+def get_list_of_depths(root: BinaryTreeNode) -> List[LinkedList]:
+    list_of_depths, curr = [], LinkedList() 
+    curr.insert(root)
+    while len(curr) > 0:
+        list_of_depths.append(curr)
+        parent, curr = curr.head, LinkedList()
+        while parent:
+            if parent.data.left:
+                curr.insert(parent.data.left)
+            if parent.data.right:
+                curr.insert(parent.data.right)
+            parent = parent.next
+
+    return list_of_depths
+
+```
+Time complexity O(n), we touch each nodes once
+Space complexity O(n) dominated by list_of_depths.
+</details>
+<details>
+  <summary>Solution Two</summary>
+
+Since we have to build linked list for nodes at each level we can build it with any kind of traversal as long as we know wich level nodes are in. We can 
+use a variable depth and pass depth+1 to next level to keep track of level, this solution is combination of dfs pre-order travel.
+
+```python
+
+def get_list_of_depths(root: BinaryTreeNode) -> List[LinkedList]:
+    def dfs(root, depth, list_of_depths):
+        if root == None:
+            return
+        depth_list = LinkedList()
+        if len(list_of_depths) > depth:
+            depth_list = list_of_depths[depth]
+        else:
+            list_of_depths.append(depth_list)
+        depth_list.insert(root)
+        dfs(root.left, depth + 1, list_of_depths)
+        dfs(root.right, depth + 1, list_of_depths)
+
+    list_of_depths = []
+    dfs(root, 0, list_of_depths)
+    return list_of_depths
+
+```
+Time complexity O(n), we touch each nodes once.
+Space complexity O(n) dominated by list_of_depths.
+</details> 
+<details>
+    <summary>Driver Code</summary>
+```python
+from typing import List
+
+
+class LinkedList:
+    def __init__(self):
+        self.head = None
+        self.tail = None
+        self.size = 0
+
+class ListNode:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+def insert(self, data):
+    if not self.head:
+        self.head = self.ListNode(data)
+        self.tail = self.head
+    else:
+        self.tail.next = self.ListNode(data)
+        self.tail = self.tail.next
+    self.size +=1
+
+def __len__(self):
+    return self.size
+
+
+
+class BinaryTreeNode:
+    def __init__(self, data, left=None, right=None):
+        self.data = data
+        self.right = right
+        self.left = left
+
+root = BinaryTreeNode("A")
+root.left = BinaryTreeNode("B")
+root.right = BinaryTreeNode("C")
+root.left.left = BinaryTreeNode("D")
+root.left.right = BinaryTreeNode("E")
+root.left.left.left = BinaryTreeNode("G")
+root.right.right = BinaryTreeNode("C")
+root.right.right.left = BinaryTreeNode("H")
+root.right.right.right = BinaryTreeNode("I")
+    
+for linked_list in get_list_of_depths_bfs(root):
+    result = []
+    curr = linked_list.head
+    while curr:
+        result.append(curr.data.data)
+        curr = curr.next
+    
+    print(result)
+
+*Linked list implementaion is naive.
+</details>
