@@ -1,0 +1,102 @@
+# Read the solution [Here](https://quastor.org/cracking-the-coding-interview/trees-and-graph/check-balanced)
+
+# Check Balanced
+
+## Cracking The Coding Interview 4.4
+
+<br/>
+
+# Question
+
+Implement a function to check if a binary tree is balanced, for the purpose of this question, a balancd tree is 
+defined to be a tree such that heights of the two subtrees of any node never differ by more than one.
+
+```
+
+InPut -                 6
+                     /      \
+                   3         9
+                 /   \      /  \
+                1     4    7    10
+                  \         \     \
+                   2         8     11
+Output - True
+
+InPut -                 6
+                     /      \
+                   3         9
+                 /   \      /  
+                1     4    7    
+                  \         \     
+                   2         8    
+Output - False
+```
+
+<details>
+  <summary>Brute Force Solution</summary>
+
+Traverse the entire tree, at each node get the height of left subtree and right subtree and check if they are balanced.
+    
+```python
+
+def is_balanced(root: BinaryTreeNode) -> bool:
+    if not root:
+        return True
+    if abs(get_height(root.left) - get_height(root.right)) > 1:
+        return False
+    else:
+        return is_balanced(root.left) and is_balanced(root.right)
+
+
+def get_height(root):
+    if not root:
+        return -1
+    else:
+        return max(get_height(root.left), get_height(root.right)) + 1
+    
+```
+Time complexity O(nlog(n)), each call to get_height takes log(n) time and we do it for all the nodes.
+Space complexity O(h)
+</details>
+
+<br/>
+
+<details>
+  <summary>Optimized Solution</summary>
+
+Insight from get_height function in brute force soltuion is that instead of calculating the height for each node separately we can check 
+if the height is balanced while we recurse through the tree.
+
+```python
+
+import collections
+
+
+def is_balanced1(root: BinaryTreeNode) -> bool:
+    BalancedStatuswithHeight = collections.namedtuple(
+        "BalancedStatusWithHeight", ("balanced", "height")
+    )
+
+    def check_balanced(root: BinaryTreeNode) -> bool:
+        if not root:
+            return BalancedStatuswithHeight(True, -1)
+        else:
+            left = check_balanced(root.left)
+            if not left.balanced:
+                return left
+            right = check_balanced(root.right)
+            if not right.balanced:
+                return right
+
+            if abs(right.height - left.height) > 1:
+                return BalancedStatuswithHeight(False, 0)
+
+            return BalancedStatuswithHeight(True, max(left.height, right.height) + 1)
+
+    return check_balanced(root).balanced
+
+
+```
+Time complexity O(n), we visit all the nodes of the tree once.
+Space complexity O(h) where h is height of the tree, recursion stack depth is equal to height of the tree.
+</details>  
