@@ -1,0 +1,95 @@
+# Read the Solution [here](https://quastor.org/cracking-the-coding-interview/stacks-and-queues/queue-via-stacks)
+
+# Queue via Stacks
+
+## Cracking the Coding Interview (CTCI) 3.4
+
+<br />
+
+## Question
+
+Build a class `MyQueue` that implements a queue using two stacks.
+
+<br />
+
+Your class should implement the methods `enqueue`, `dequeue` and `peek`.
+
+<br />
+
+<details>
+  <summary>Solution</summary>
+
+  <br />
+
+  The difference between a queue and a stack is that queues operate on a First In First Out basis while stacks operate on a First In Last Out basis.
+
+  <br />
+
+  This means that when you `push` N items on to the stack and then `pop` those N items off the stack, the **order of the N items will be reversed**. This is due to the **Last In First Out** property of stacks.
+
+  <br />
+
+  When you're working with a queue, however, **the order of items is maintained**. If you `enqueue` N items on to a queue and then `dequeue` those N items, the order of the items will remain the same. This is due to the **First In First Out** property of queues.
+
+  <br />
+
+  Therefore, if we want to build a queue with stacks, we have to design our data structure in a way so that the order of the items remains the same, rather than reversing (what a stack naturally does).
+
+  <br />
+
+  We can accomplish this by pushing each item inserted *through two stacks*. The first stack will reverse every item inserted. The second stack will reverse every item inserted *again*, which means going back to the original order.
+
+  <br />
+
+  So how do we implement this in code?
+
+  <br />
+
+  Whenever the user enqueues an item into our data structure, we'll `push` it to `stack1`.
+
+  <br />
+
+  Now, when we want `dequeue` items from our queue, we have to reverse the order.
+
+  <br />
+
+  We first call `_reverseStack` which handles transfering all the items from `stack1` to `stack2`.
+
+  <br />
+
+  Then, we can `pop` the last item in `stack2` and return that.
+
+  <br /> 
+
+  `peek` works the exact same way as `dequeue` except we are just returning the last item in `stack2` instead of popping it off.
+
+  <br />
+
+  The time complexity is $$O(n)$$ since each item is transferred from one stack to the other *once*. The space complexity is also $$O(n)$$.
+
+  ```python
+  class MyQueue:
+      def __init__(self):
+          self.stack1 = []
+          self.stack2 = []
+      
+      def enqueue(self, item):
+          self.stack1.append(item)
+      
+      def _reverseStack(self, operation):
+          if len(self.stack2) == 0:
+              if len(self.stack1) == 0:
+                  raise IndexError(f'{operation} from empty queue')
+              while len(self.stack1):
+                  self.stack2.append(self.stack1.pop())
+          
+      
+      def dequeue(self):
+          self._reverseStack("deque")
+          return self.stack2.pop()
+      
+      def peek(self):
+          self._reverseStack("peek")
+          return self.stack2[-1]
+  ```
+</details>
