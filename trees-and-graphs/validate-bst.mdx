@@ -1,0 +1,155 @@
+# Read the solution [Here](https://quastor.org/cracking-the-coding-interview/trees-and-graph/validate-bst)
+
+# Validate BST
+
+## Cracking The Coding Interview 4.5
+
+<br/>
+
+# Question
+
+Implement a function to check if a binary tree is a binary search tree
+
+```
+Input -                 6
+                     /      \
+                   3         9
+                 /   \      /  \
+                1     4    7    10
+
+Output - True
+
+Input -                 6
+                     /      \
+                   3         9
+                 /   \      /  \
+                1     8    7    10
+
+
+Output - False
+
+```
+<details>
+  <summary>Brute Force Solution</summary>
+
+Traverse the tree in-order copy the the data to an array and verify if the array is sorted.
+    
+```python
+
+class BinaryTreeNode:
+    def __init__(self, data):
+        self.data = data
+        self.right = None
+        self.left = None
+
+
+
+def is_bst(root: BinaryTreeNode) -> bool:
+    def fill_sorted_items(root):
+        if not root:
+            return
+        fill_sorted_items(root.left)
+        sorted_items.append(root.data)
+        fill_sorted_items(root.right)
+    sorted_items = []
+    fill_sorted_items(root)
+    i = 1
+    while i < len(sorted_items):
+        if sorted_items[i-1] >= sorted_items[i]:
+            return False
+        i += 1
+
+    return True
+
+```
+Time complexity O(n).
+Space complexity O(n).
+this approach fails when duplicates are alowed on any one side of the root,
+let's say our bst property is (left <= root < right), inorder traversal produces same output in folowing cases.
+
+```
+        Valid BST           Invalid BST
+Input -    20                   20
+          /                       \
+        20                         20
+
+```
+</details>
+
+<br/>
+
+<details>
+  <summary>Optimized Solution One</summary>
+
+if we look closely at brute force solution the list sorted_items is used only for comparing the element to previous element,
+we can do the same comparision while traversing the tree in-order by keeping track of previously seen node.
+
+    
+```python
+
+class BinaryTreeNode:
+    def __init__(self, data):
+        self.data = data
+        self.right = None
+        self.left = None
+
+
+
+class WrapPreviousNodeData:
+    def __init__(self, data):
+        self.data = data
+
+previous_node_data: WrapPreviousNodeData = WrapPreviousNodeData(float("-inf"))
+def is_bst(root: BinaryTreeNode) -> bool:
+    if not root:
+        return True
+    if not is_bst(root.left):
+        return False
+    if root.data < previous_node_data.data:
+        return False
+    previous_node_data.data = root.data
+    if not is_bst(root.right):
+        return False
+    return True
+
+```
+Time complexity O(n). we touch all nodes of the tree once.
+Space complexity O(h), because of recursion, recursion depth is equal to height of the tree.
+</details>
+
+<br/>
+
+<details>
+  <summary>Optimized Solution Two</summary>
+
+For a binary tree to be valid bst every node should be greater than the max of its left subtree and less than the min of its right subtree, we can use this property 
+to validate if the binary tree is indeed a bst.
+
+```python
+
+class BinaryTreeNode:
+    def __init__(self, data):
+        self.data = data
+        self.right = None
+        self.left = None
+
+
+
+def is_bst(root: BinaryTreeNode) -> bool:
+    def validate_bst(root, min, max):
+        if not root:
+            return True
+        if root.data <= min or root.data >= max:
+            return False
+        if not (
+            validate_bst(root.left, min, root.data) 
+            and validate_bst(root.right, root.data, max)
+            ):
+            return False
+        return True
+    return validate_bst(root, float("-inf"), float("+inf"))
+
+```
+Time complexity O(n) we touch all the nodes of the tree once.
+Space complexity O(h) where h is height of the tree, recursion stack depth is equal to height of the tree.
+</details>
