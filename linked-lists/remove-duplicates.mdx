@@ -32,7 +32,7 @@ def removeDuplicates(head):
         if cur.next.val in items:
             cur.next = cur.next.next
         else:
-            set.add(cur.next.val)
+            items.add(cur.next.val)
             cur = cur.next
     return head
 ```
