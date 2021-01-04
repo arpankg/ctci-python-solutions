@@ -115,11 +115,16 @@ The time complexity is $$O(n \log n)$$ and the space complexity is $$O(n)$$.
 
 Can we do even better than $$O(n \log n)$$? Yes, we definitely can.
 
-We only use one loop to iterate every character in s and a variable checker to check if a duplicate
+We only use one loop to iterate every character in **s** and a variable **checker** to check if a duplicate
 character is encountered or not. 
 
-We find the decimal index value of each character in Ascii table which is unique for sure. Then, the bit in that index value is set to 1 and
-if a character is seen before, AND operation will make the value greater than 0.
+We find the decimal index value of each character in Ascii table which is unique for sure. Then, the bit in that index value is set to 1 by **1 << index**.
+
+If a character is seen before, AND operation will make the value greater than 0.
+
+If a characters is not seen, we just update **checker** by making the bit 1 at the index by **checker | (1 << index)**.
+
+You may also notice that **(1 << index)** has the same output with **pow(2, index)** and **checker = checker | (1 << index)** has the same output with **chcker += (1 << index)**. We are using bitwise operation here is because it has time complexity of $$O(1)$$ and avoid the overhead.
 
 ```python
 def isUnique(s):
@@ -130,10 +135,10 @@ def isUnique(s):
         value = (checker & ((1 << index)))
         if value > 0:
             return False
-        checker += (1 << index)
+        checker =  checker | (1 << index)
     return True
 ```
 
-The time complexity is $$O(n)$$ and the space complexity is $$O(n)$$.
+The time complexity is $$O(n)$$ and the space complexity is $$O(n)$$ because we're creating a new string on line 2.
  </details>
 
