@@ -18,7 +18,6 @@ Output - True (the letters can be rearranged to " racecar")
 <details>
   <summary>Solution</summary>
 
-
 In order to solve this, we need to think about the properties of a palindrome. You should write a couple of palindromes down and see if you can notice any patterns.
 they either
 
@@ -35,12 +34,9 @@ def checkPermutation(s):
     for i in s:
         if i == " ":
             continue
-        if i in counts.items():
-            counts[i] += 1
-        else:
-            counts[i] = 1
+        counts[i] = counts.get(i, 0) + 1
     hasOdd = False
-    for key, value in counts:
+    for value in counts.values():
         if value % 2 == 1:
             if hasOdd:
                 # we have more than one char
@@ -56,4 +52,3 @@ def checkPermutation(s):
 The time complexity is $$O(n)$$ and the space complexity is $$O(n)$$
 
 </details>
-
