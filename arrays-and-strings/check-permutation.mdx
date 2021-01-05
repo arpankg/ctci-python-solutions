@@ -35,12 +35,10 @@ The time complexity is $$O(n \log n)$$. The space complexity is $$O(n)$$ since w
 
 </details>
 
-
 <br />
 
 <details>
   <summary>Optimal Solution</summary>
-
 
 1. Create a dictionary
 2. Iterate through the first string
@@ -64,21 +62,17 @@ Now, we iterate through the second string and _subtract_ 1 for each character fr
 def checkPermutation(s1, s2):
     count = {}
     for i in s1:
-        if i in count:
-            count[i] += 1
-        else:
-            count[i] = 1
+        count[i] = count.get(i, 0) + 1
     for i in s2:
         if i in count:
             count[i] -= 1
+            if count[i] == 0:
+                del count[i]
         else:
             return False
-        if count[i] == 0:
-            del count[i]
-    return True
+    return len(count) == 0
 ```
 
 The time complexity is $$O(n)$$. The space complexity is $$O(n)$$.
 
 </details>
-
