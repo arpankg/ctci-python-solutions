@@ -1,0 +1,120 @@
+# Read the solution [Here](https://quastor.org/cracking-the-coding-interview/trees-and-graph/successor)
+
+# Check Balanced
+
+## Cracking The Coding Interview 4.6
+
+<br/>
+
+# Question 
+
+Write an algorithm to find the next node(i.e. in-order-successor) of a given node in a binary search tree. you may assume that each node 
+has a link to its parent.
+
+```
+                                          
+Tree -          6           
+             /      \
+           3         9
+         /   \      /  \
+        1     4    7    10
+
+InPut - 6
+OutPut - 7
+
+InPut - 4
+OutPut - 6
+
+InPut - 10                
+OutPut - None
+
+```
+
+<details>
+  <summary>Brute Force Solution</summary>
+
+Since every node has a pointer to its parent find the root of the tree by folowing the parent pointer of the given node, 
+then traverse the tree in-order and copy the the data to an array, and find the next greatest element in the sorted array.  
+
+```python
+
+from typing import Optional, List
+
+
+class BinaryTreeNode:
+    def __init__(self, data, parent):
+        self.data = data
+        self.right = None
+        self.left = None
+        self.parent = parent
+
+
+def successor(node: BinaryTreeNode) -> Optional[BinaryTreeNode]:
+    if not node:
+        return None
+    root = get_root(node)
+    sorted_items: List[BinaryTreeNode] = []
+    fill_sorted_items(root, sorted_items)
+    for index in range(len(sorted_items)):
+        if sorted_items[index].data > node.data:
+            return sorted_items[index]
+    return None
+
+
+def fill_sorted_items(root: BinaryTreeNode, sorted_items: List[BinaryTreeNode]) -> None:
+    if not root:
+        return
+    fill_sorted_items(root.left, sorted_items)
+    sorted_items.append(root)
+    fill_sorted_items(root.right, sorted_items)
+
+
+def get_root(node: BinaryTreeNode) -> BinaryTreeNode:
+    if not node.parent:
+        return node
+    return get_root(node.parent)
+
+```
+
+Time complexity O(n).
+Space complexity O(n).
+
+</details>
+
+<br/>
+
+<details>
+  <summary>Optimized Solution</summary>
+
+Trick to optimize the solution is in understanding how in-order traversal works. If a node has right subtree, then in-order successor
+is the left most node on the right subtree, if a node doesn't have a subtree then we have to traverse up using the parent pointer until we are
+on left side instead of right side of a node. 
+
+```python
+
+from typing import Optional
+
+
+def successor(node: BinaryTreeNode) -> Optional[BinaryTreeNode]:
+    if not node:
+        return None
+    if node.right:
+        return left_most_child(node.right)
+    curr: BinaryTreeNode = node
+    parent: Optional[BinaryTreeNode] = curr.parent
+    while parent and parent.left != curr:
+        curr = parent
+        parent = parent.parent
+    return parent
+
+
+def left_most_child(node: BinaryTreeNode) -> Optional[BinaryTreeNode]:
+    while node and node.left:
+        node = node.left
+    return node
+
+
+```
+Time complexity O(h), where h is the height of the tree.
+Space complexity O(1).
+</details>  
