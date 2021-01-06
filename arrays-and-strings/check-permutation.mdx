@@ -23,15 +23,21 @@ Output - False
 
 <br />
 
-Sort the characters in both strings. Then, check if the strings are equivalent.
+Sort the characters in both strings. Then, check if the strings are equivalent. 
+
+<br />
+
+If they are, that means that they consist of the same characters and are a permutation of each other.
+
+<br />
+
+The time complexity is $$O(n \log n)$$ since we're sorting the characters in both strings. The space complexity is $$O(n)$$ since we're creating new strings for `s1` and `s2`.
 
 ```python
 def checkPermutation(s1, s2):
     s1, s2 = sorted(s1), sorted(s2)
     return s1 == s2
 ```
-
-The time complexity is $$O(n \log n)$$. The space complexity is $$O(n)$$ since we're creating new strings for `s1` and `s2`.
 
 </details>
 
