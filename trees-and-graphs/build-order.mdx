@@ -1,0 +1,357 @@
+# Read the solution [Here](https://quastor.org/cracking-the-coding-interview/trees-and-graph/build_order)
+
+# build_order
+
+## Cracking The Coding Interview 4.7
+
+<br/>
+
+# Question
+
+you are given a list of projects and a list dependencies(which is a list of pairs of projects,
+where the second project is dependent on the first project). All of a project's dependencies must be built before 
+the project is. Find a build order that will allow the project to be built If there is no valid build order. return an
+error.
+
+```
+
+Input -  
+    projects = [a, b, c, d, e, f]
+    dependencies = [[a,d], [f,b], [b,d], [f,a], [d,c]]
+Output - [f, e, a, b, d, c]
+
+Input -  
+    projects = [a, b, c, d, e, f]
+    dependencies = [[a,d], [f,b], [b,d], [f,a], [d,c],[c,d]]
+Output - None 
+
+```
+
+<details>
+  <summary>Solution One</summary>
+
+This solution is based on the insight that build can start with the projects that have zero dependencies and 
+check if any of their dependent projects can be processed next and repeate these steps. the code is 
+converted as it is in CTCI to python.
+
+```python
+
+from __future__ import annotations
+from typing import List
+
+
+def find_build_order(projects: List[str], dependencies: List[List[str]]) -> List[str]:
+    graph: Graph = build_graph(projects, dependencies)
+    return order_projects(graph.get_nodes())
+
+
+def build_graph(projects: List[str], dependencies: List[List[str]]) -> Graph:
+    graph: Graph = Graph()
+    for project in projects:
+        graph.get_or_create_node(project)
+    for dependency in dependencies:
+        start: str = dependency[0]
+        end: str = dependency[1]
+        graph.add_edge(start, end)
+    return graph
+
+
+def order_projects(projects: List[Project]) -> List[Project]:
+    order: List[Project] = [None] * len(projects)
+    end_of_list: int = add_non_dependent(order, projects, 0)
+    to_be_processed = 0
+    while to_be_processed < len(order):
+        current: Project = order[to_be_processed]
+        if not current:
+            return None
+        children: List[Project] = current.get_children()
+        for child in children:
+            child.decrease_dependencies()
+        end_of_list = add_non_dependent(order, children, end_of_list)
+        to_be_processed += 1
+    return order
+
+
+def add_non_dependent(
+    order: List[Project], projects: List[Project], offset: int
+) -> int:
+    for project in projects:
+        if project.get_number_of_dependencies() == 0:
+            order[offset] = project
+            offset += 1
+    return offset
+
+
+class Project:
+    def __init__(self, name: str):
+        self._children: List[Project] = []
+        self._map: dict[str, Project] = {}
+        self._name: str = name
+        self._dependencies: int = 0
+
+    def add_neighbor(self, node: Project) -> None:
+        if not node.get_name() in self._map:
+            self._children.append(node)
+            self._map[node.get_name()] = node
+            node.increase_dependencies()
+
+    def increase_dependencies(self) -> None:
+        self._dependencies += 1
+
+    def decrease_dependencies(self) -> None:
+        self._dependencies -= 1
+
+    def get_name(self) -> str:
+        return self._name
+
+    def get_children(self) -> List[Project]:
+        return self._children
+
+    def get_number_of_dependencies(self) -> int:
+        return self._dependencies
+
+
+class Graph:
+    def __init__(self):
+        self._nodes: List[Project] = []
+        self._map: dict[str, Project] = {}
+
+    def get_or_create_node(self, name: str) -> Project:
+        if not name in self._map:
+            node: Project = Project(name)
+            self._nodes.append(node)
+            self._map[name] = node
+        return self._map[name]
+
+    def add_edge(self, start: str, end: str) -> None:
+        start_node: Project = self.get_or_create_node(start)
+        end_node: Project = self.get_or_create_node(end)
+        start_node.add_neighbor(end_node)
+
+    def get_nodes(self):
+        return self._nodes
+
+```
+Time complexity O(P + D), where P is number of projects(vertices) and D is number of dependency pairs(edges).
+Space complexity O(P + D), where P is number of projects(vertices) and D is number of dependency pairs(edges).
+</details>
+
+<br/>
+
+<details>
+  <summary>Solution Two</summary>
+
+This solution is based on depth-first-search. build a directed graph and then start a DFS from each node,
+keep track of visited nodes,when you hit the end of DFS start adding nodes to build order stack as you walk 
+up the recursion stack. we should also have a way to track the nodes that are in current recursion stack, there is a cycle
+in the graph if we see the nodes that are in current resusion stack again, that means no valid build order.
+
+```python
+from __future__ import annotations
+from typing import List
+from queue import LifoQueue
+from enum import Enum
+
+
+def find_build_order(projects: List[str], dependencies: List[List[str]]) -> List[str]:
+    graph: Graph = build_graph(projects, dependencies)
+    return order_projects(graph.get_nodes())
+
+
+def order_projects(projects: List[Project]) -> List[Project]:
+    order = LifoQueue()
+    for project in projects:
+        if project.get_state() == State.BLANK:
+            if not doDFS(project, order):
+                return None
+    return order
+
+
+def doDFS(project, order):
+    if project.get_state() == State.PARTIAL:
+        return False
+    if project.get_state() == State.BLANK:
+        project.set_state(State.PARTIAL)
+        for child in project.get_children():
+            if not doDFS(child, order):
+                return False
+        project.set_state(State.COMPLETE)
+        order.put(project)
+    return True
+
+
+# Same as previous Soltuion
+def build_graph(projects: List[str], dependencies: List[List[str]]) -> Graph:
+    graph: Graph = Graph()
+    for project in projects:
+        graph.get_or_create_node(project)
+    for dependency in dependencies:
+        start: str = dependency[0]
+        end: str = dependency[1]
+        graph.add_edge(start, end)
+    return graph
+
+
+class Graph:
+    def __init__(self):
+        self._nodes: List[Project] = []
+        self._map: dict[str, Project] = {}
+
+    def get_or_create_node(self, name: str) -> Project:
+        if not name in self._map:
+            node: Project = Project(name)
+            self._nodes.append(node)
+            self._map[name] = node
+        return self._map[name]
+
+    def add_edge(self, start: str, end: str) -> None:
+        start_node: Project = self.get_or_create_node(start)
+        end_node: Project = self.get_or_create_node(end)
+        start_node.add_neighbor(end_node)
+
+    def get_nodes(self):
+        return self._nodes
+
+
+class Project:
+    def __init__(self, name: str):
+        self._children: List[Project] = []
+        self._map: dict[str, Project] = {}
+        self._name: str = name
+        self._dependencies: int = 0
+        self._state = State.BLANK
+
+    def add_neighbor(self, node: Project) -> None:
+        if not node.get_name() in self._map:
+            self._children.append(node)
+            self._map[node.get_name()] = node
+            node.increase_dependencies()
+
+    def increase_dependencies(self) -> None:
+        self._dependencies += 1
+
+    def decrease_dependencies(self) -> None:
+        self._dependencies -= 1
+
+    def get_name(self) -> str:
+        return self._name
+
+    def get_children(self) -> List[Project]:
+        return self._children
+
+    def get_number_of_dependencies(self) -> int:
+        return self._dependencies
+
+    def get_state(self):
+        return self._state
+
+    def set_state(self, state: State):
+        self._state = state
+
+
+class State(Enum):
+    COMPLETE = 1 # Processed node
+    PARTIAL = 2 # Node is in current resusion stack
+    BLANK = 3 # Not processed
+
+```
+Time complexity O(P + D), where P is number of projects(vertices) and D is number of dependency pairs(edges).
+Space complexity O(P + D), where P is number of projects(vertices) and D is number of dependency pairs(edges).
+</details>  
+
+<br/>
+
+<details>
+<summary>Keeping It Simple</summary>
+<details>
+<summary>Solution one</summary>
+
+Using defaultdict for adjucenncy list graph representation
+
+```python
+
+from collections import defaultdict
+from queue import Queue
+
+
+def find_build_order(projects, dependencies):
+    in_degree_map = defaultdict(int)
+    graph, q = defaultdict(set), Queue()
+    build_graph(dependencies, graph, in_degree_map)
+    for project in in_degree_map:
+        if not in_degree_map[project]:
+            q.put(project)
+    result, visited  = [], set()
+    while not q.empty():
+        curr = q.get()
+        result.append(curr)
+        visited.add(curr)
+        for nhbr in graph[curr]:
+            in_degree_map[nhbr] -= 1
+            if not in_degree_map[nhbr] and nhbr not in visited:
+                q.put(nhbr)
+    return None if len(result) != len(projects) else result
+
+
+def build_graph(dependencies, graph, in_degree_map):
+    for edge in dependencies:
+        graph[edge[0]].add(edge[1])
+        in_degree_map[edge[0]] += 0
+        in_degree_map[edge[1]] += 1
+
+```
+
+Time complexity O(P + D), where P is number of projects(vertices) and D is number of dependency pairs(edges).
+Space complexity O(P + D), where P is number of projects(vertices) and D is number of dependency pairs(edges).
+</details>
+
+<br/>
+
+<details>
+<summary>Solution one</summary>
+
+DFS solution, Using defaultdict for adjucenncy list graph representation.
+
+```python
+
+from collections import defaultdict
+
+def find_build_order(projects, dependencies):
+    visited, order = set(), []
+    graph = build_graph(dependencies)
+    for project in projects:
+        if project not in visited:
+            visited.add(project)
+            recursion_stack = set()
+            if not dfs(graph, project, visited, order, recursion_stack):
+                return None
+    return list(reversed(order))
+
+
+def dfs(graph, project, visited, order, recursion_stack):
+    recursion_stack.add(project)
+    for nhbr in graph[project]:
+        if nhbr in recursion_stack:
+            return False
+        if nhbr not in visited:
+            visited.add(nhbr)
+            if not dfs(graph, nhbr, visited, order, recursion_stack):
+                return False
+    order.append(project)
+    recursion_stack.remove(project)
+    return True
+
+
+def build_graph(dependencies):
+    graph = defaultdict(set)
+    for edge in dependencies:
+        start, end = edge[0], edge[1]
+        graph[start].add(end)
+    return graph
+
+```
+
+Time complexity O(P + D), where P is number of projects(vertices) and D is number of dependency pairs(edges).
+Space complexity O(P + D), where P is number of projects(vertices) and D is number of dependency pairs(edges).
+</details>
+</details>
