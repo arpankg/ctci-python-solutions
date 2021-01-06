@@ -120,6 +120,8 @@ character is encountered or not.
 
 We find the decimal index value of each character in Ascii table which is unique for sure. Then, the bit in that index value is set to 1 by **1 << index**.
 
+If the index is between 65 and 90 which is 'A' - 'Z', we increase the index by 32 to implicitly convert the capital letter to small letter. Because we don't care about capitalization here, we need to assign the same index to both upppercase and lowercase.
+
 If a character is seen before, AND operation will make the value greater than 0.
 
 If a characters is not seen, we just update **checker** by making the bit 1 at the index by **checker | (1 << index)**.
@@ -128,10 +130,11 @@ You may also notice that **(1 << index)** has the same output with **pow(2, inde
 
 ```python
 def isUnique(s):
-    s = s.lower()
     checker = 0
     for i in range(len(s)):
         index = ord(s[i])
+        if 65 <= index <= 90:
+            index += 32
         value = (checker & ((1 << index)))
         if value > 0:
             return False
@@ -139,6 +142,6 @@ def isUnique(s):
     return True
 ```
 
-The time complexity is $$O(n)$$ and the space complexity is $$O(n)$$ because we're creating a new string on line 2.
+The time complexity is $$O(n)$$ and the space complexity is $$O(1)$$
  </details>
 
