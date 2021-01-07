@@ -8,12 +8,27 @@
 
 ## Question
 
-You are given a string with spaces. You want to replace each space with `%20`. The string will have sufficient trailing spaces at the end to contain the additional characters from the `%20`s. You'll also be given an integer that represents the length of the string without the trailing spaces.
+You are given a string with spaces. You want to encode the string as a URL, which means getting rid of the whitespace.
+
+<br />
+
+Therefore, the task is to replace every space in the string with a `%20`.
+
+<br />
+
+The string will have sufficient trailing spaces at the end to contain the additional characters from the `%20`s. 
+
+<br />
+
+You'll also be given an integer that represents the length of the string without the trailing spaces.
+
+<br />
 
 Strings are immutable in Python, so you'll get a character array instead (list of chars).
 
 ```
-Input - ['h', 'i', ' ', 'b', 'u', 'd', ' ', ' '], 7
+# string contains 2 trailing spaces for %20 chars
+Input - ['h', 'i', ' ', 'b', 'u', 'd', ' ', ' '], 6
 Output - ['h', 'i', '%', '2', '0', 'b', 'u', 'd']
 ```
 
@@ -21,28 +36,42 @@ Output - ['h', 'i', '%', '2', '0', 'b', 'u', 'd']
   <summary>Solution</summary>
 
 
-You can solve this using the two pointer technique. One pointer (`p1`) is at the end of the array. The other pointer (`p2`) is at the end of the "true" string (it's initialized to the integer we get as input).
+You can solve this using the two pointer technique. We'll create two integer variables that point to specific indexes in our character array.
 
-1. Initiate a while loop that iterates while `p1 >= 0 and p2 >= 0`.
-   - If the character at `p2` is not equal to " ", then copy the character at `p2` over to `p1`. Decrement both pointers.
-   - If the character at `p2` is equal to " ", then copy over each char in `02%` to `p1` and decrement `p1` as you go. Remember that we're iterating backwards, which is why we use `02%` instead of `%20`. Then, decrement both pointers
-2. Exit the function
+<br />
+
+One variable (`p1`) will point to the the end of the array. 
+
+<br />
+
+The other variable (`p2`) will point to the end of the "true" string. It is set to the integer that we got in the input (in the example above, it would be set to `7`).
+
+<br />
+
+Now, we run a while loop that iterates while `p1 >= 0 and p2 >= 0`. In the while loop...
+   - If the character at `p2` is not equal to " ", then copy the character at `p2` over to `p1`. Then, decrement both pointers.
+   - Otherwise, if the character at `p2` is equal to " ", then copy over each char in `02%` to `p1` and decrement `p1` as you go. Remember that we're iterating backwards, which is why we use `02%` instead of `%20`. Then, decrement `p2`.
+
+<br />
+
+The time complexity is $$O(n)$$ and the space complexity is $$O(1)$$.
 
 ```python
 def urlify(s, i):
-    p1, p2 = len(s) - 1, i
+    p1, p2 = len(s) - 1, i - 1
     while p1 >= 0 and p2 >= 0:
         if s[p2] != " ":
             s[p1] = s[p2]
+            p1 -= 1
+            p2 -= 1
         else:
             for i in reversed("%20"):
                 s[p1] = i
                 p1 -= 1
-        p1 -= 1
-        p2 -= 1
+            p2 -= 1
 ```
 
-The time complexity is $$O(n)$$ and the space complexity is $$O(1)$$.
+<a href="https://repl.it/@quastortech/Solution#main.py" target="_blank">Here's a Python 3 REPL with the solution and test cases.</a>
 
 </details>
 
