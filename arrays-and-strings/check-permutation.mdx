@@ -76,35 +76,3 @@ def checkPermutation(s1, s2):
 The time complexity is $$O(n)$$. The space complexity is $$O(n)$$.
 
 </details>
-
-<br />
-
-<details>
-  <summary>Bitwise Solution</summary>
-
-<br />
-
-In this solution, we first compare if two strings have the same length. If their length is not equal, we return **False** directly.
-
-It's easy to notice that if one string is permutation of another, then they would have all the same characters in different order.
-
-There are two loops for iterating every character in **s1** and **s2**.  In each loop, we first obtain the decimal index of each character in Ascii table which is unique for sure. Then, we use this index value to update the checker variable by **checker = checker | (1 << index)**, i.e. the bit in that index value is set to 1.
-
-After we finish the iterations for two strings, we have the values for **checkerA** and **checkerB**. If one string is permutation of another, both checker variables would have the exactly same value. The logic here is both **checkerA** and **checkerB** should have the same number of ones and zeros in their binary values and each 1 in two values should have the same positions as well.
-
-```python
-def checkPermutation(s1, s2):
-    if len(s1) != len(s2): return False
-    checkerA, checkerB = 0, 0
-    for x in s1:
-        index = ord(x)
-        checkerA = checkerA | (1 << index)
-    for y in s2:
-        index = ord(y)
-        checkerB = checkerB | (1 << indeX)
-    return checkerA == checkerB
-```
-
-The time complexity is $$O(n)$$. The space complexity is $$O(1)$$
-
-</details>
