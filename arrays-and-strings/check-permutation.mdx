@@ -13,6 +13,7 @@ The input is two strings. Check if the first string is a permutation of the seco
 ```
 Input - "wazup bro", " orbpuwaz"
 Output - True
+# the first character in " orbpuwaz" is a " "
 
 Input - "hiiiya", "hiya"
 Output - False
@@ -20,6 +21,8 @@ Output - False
 
 <details>
   <summary>Brute Force Solution</summary>
+
+We can first check to make sure the lengths of both strings are the same. If the lengths are different, then we immediately know that the strings are not permuations of each other.
 
 <br />
 
@@ -35,6 +38,9 @@ The time complexity is $$O(n \log n)$$ since we're sorting the characters in bot
 
 ```python
 def checkPermutation(s1, s2):
+    if len(s1) != len(s2):
+        return False
+
     s1, s2 = sorted(s1), sorted(s2)
     return s1 == s2
 ```
@@ -44,28 +50,39 @@ def checkPermutation(s1, s2):
 <br />
 
 <details>
-  <summary>Optimal Solution</summary>
+  <summary>Optimized Solution</summary>
 
-1. Create a dictionary
-2. Iterate through the first string
-   - if the char is in the dictionary, increment 1 to it's value
-   - if the char is not in the dictionary, set it's value to 1
+  We want to check if both strings consist of the same characters.
 
-After the iteration ends, we will a dictionary where the keys are the letters in the first string, and the values are the number of times that letter appears in the first string.
+  <br />
 
-Now, we iterate through the second string and _subtract_ 1 for each character from our dictionary's values. If we come across a character that's not in our dictionary we can immediately return False, since the two strings would have all the same characters if they were permutations.
+  We can do this by creating a dictionary of character counts for the first string.
 
-3. Iterate through the second string
+  <br />
 
-   - if the char is in the dictionary, decrement 1
-   - if the char is not in the dictionary, return `False`
+  We iterate through the first string and count the number of times each character appears. As we iterate through the first string, if we come across a character that is not in the dictionary, we add the character as a key in the dictionary and give it a value of `1`. If the character is already a key in the dictionary, then we increment it's value.
 
-   Check if the value in the dictionary for the char is 0. If it is, delete the char from the dictionary, since we're done comparing the counts for that char between both strings.
+  <br />
 
-4. return `True` if the length of the dictionary is 0. That means that all the chars in the first string had an equivalent count in the second string and that the second string didn't have any extra chars that weren't in the first string.
+  With the dictionary of character counts for the first string, we now want to compare it to the second string and make sure the second string has all the same characters. If so, then we know that the second string is a permutation of the first string.
+
+  <br />
+
+  We iterate through the second string and check if the character is a key in our dictionary. If it's not a key, then we immediately know that the second string *is not* a permutation of the first string and we can return `False`. If the character is a key in our dictionary, then we can decrement the value for that key. If the value is now `0`, then we can delete that key from our dictionary.
+
+  <br />
+
+  If the second string is a permutation of the first string, the dictionary should now be empty. So we'll return `True` if our character counts dictionary is empty and `False` otherwise.
+
+  <br />
+
+  The time complexity is $$O(n)$$. The space complexity is $$O(n)$$.
 
 ```python
 def checkPermutation(s1, s2):
+    if len(s1) != len(s2):
+        return False
+
     count = {}
     for i in s1:
         count[i] = count.get(i, 0) + 1
@@ -78,7 +95,4 @@ def checkPermutation(s1, s2):
             return False
     return len(count) == 0
 ```
-
-The time complexity is $$O(n)$$. The space complexity is $$O(n)$$.
-
 </details>
