@@ -1,0 +1,244 @@
+# Read the solution [Here](https://quastor.org/cracking-the-coding-interview/trees-and-graph/first_common_ancestor)
+
+# First Common Ancestor
+
+## Cracking The Coding Interview 4.8
+
+<br/>
+
+# Question
+
+Design and write code to find first common ancestor of two nodes in a binary tree.
+Avoid storing aditional nodes in a data structure. NOTE: this is not necessarily a binary search tree.
+
+
+```
+Tree  -                 6
+                     /      \
+                   4         3
+                 /   \      /  \
+                1     2    19    10
+                  \         \     \
+                   18         8     11
+
+InPut -  p = 8, q = 11
+OutPut - 3
+
+InPut -  p = 2, q = 4
+OutPut - 4
+
+InPut -  p = 80, q = 11
+OutPut - None
+
+```
+
+<details>
+  <summary>Solution One: With Links to Parents</summary>
+
+Let's say both the nodes are at same depth, we can travel up the nodes using parent pointer in tandom and when nodes meet we can return
+the node as first common ancestor. But, this might not always be the case because nodes might be at different depth, if we can manage to 
+bring them to same level then we have a simple problem at hand and this solution is based on that insight.
+
+    
+```python
+
+class BinaryTreeNode:
+    def __init__(self, data):
+        self.data = data
+        self.left = None
+        self.right = None
+        self.parent = None
+
+
+def common_ancestor(p, q) -> int:
+    delta = depth(p) - depth(q)
+    # let p be the deeper node
+    if delta < 0:
+        p, q = q, p
+    delta = abs(delta)
+    while delta:
+        p = p.parent
+        delta -= 1
+    while p != q:
+        p, q = p.parent, q.parent
+    return p
+
+
+def depth(node):
+    depth = 0
+    while node:
+        depth += 1
+        node = node.parent
+    return depth
+
+
+```
+Time complexity O(d), where d is the depth of the tree.
+Space complexity O(n) extra parent pointer in the binary tree for each node.
+</details>
+
+<br/>
+
+<details>
+  <summary>Solution Two: Better Worst-Case Runtime</summary>
+
+    Travel up from one of the nodes(p), keep track of parent and sibling nodes, at each iteration parent gets set to  
+    parent.parent and sibling get's set to sibling.parent. We are done searching when the sibling node is or covers the other node(q)
+
+```python
+
+class BinaryTreeNode:
+    def __init__(self, data):
+        self.data = data
+        self.left = None
+        self.right = None
+        self.parent = None
+
+
+def common_ancestor(root, p, q):
+    if not covers(root, p) or not covers(root, q):
+        return False
+    elif covers(p, q):
+        return p
+    elif covers(q, p):
+        return q
+    sibling = get_sibling(p)
+    parent = p.parent
+    while not covers(sibling, q):
+        sibling = get_sibling(parent)
+        parent = parent.parent
+    return parent
+
+
+def covers(root, p):
+    if not root:
+        return False
+    if root == p:
+        return True
+    return covers(root.left, p) or covers(root.right, p)
+
+
+def get_sibling(node):
+    if not node or not node.parent:
+        return None
+    parent = node.parent
+    return parent.right if parent.left == node else parent.left
+
+```
+Time complexity O(t), where t is the size of the subtree for the first common ancestor.
+Space complexity O(n) extra parent pointer in the binary tree for each node.
+
+</details> 
+
+<br/>
+
+<details>
+  <summary>Solution Three: Without Links to parent </summary>
+
+    Start from the root, first check both the nodes are in the tree. then,
+    check which side of the root covers both p and q and continue searching that side,
+    do this recursively until p and q are not on the same side and return that root.
+    This resembles a little bit to finding first common ancestor in a 
+    binary search tree, though run time is completely different.
+
+```python
+
+class BinaryTreeNode:
+    def __init__(self, data):
+        self.data = data
+        self.left = None
+        self.right = None
+
+
+def common_ancestor(root, p, q):
+    if not covers(root, p) or not covers(root, q):
+        return None
+    return ancestor_helper(root, p, q)
+
+
+def ancestor_helper(root, p, q):
+    if not root or root == p or root == q:
+        return root
+
+    p_onleft = covers(root.left, p)
+    q_onleft = covers(root.left, q)
+
+    if p_onleft is not q_onleft:
+        return root
+
+    if p_onleft and q_onleft:
+        return ancestor_helper(root.left, p, q)
+    else:
+        return ancestor_helper(root.left, p, q)
+
+
+def covers(root, p):
+    if not root:
+        return False
+    if root == p:
+        return True
+    return covers(root.left, p) or covers(root.right, p)
+
+
+```
+Time complexity O(n), dominated by checking whether the nodes are in the tree.
+Space complexity O(d) where d is depth of the tree.
+</details>
+
+<br/>
+
+<details>
+  <summary>Solution Four(Optimized)</summary>
+
+    Solution three has optimal run time but it is ineffient because we check both the subtrees initialy
+    then we move to one of the subtree and do the same check on the subtree all over again. we can get away with repeated checking 
+    by bubbling up the result when we find one node. Reading CTCI is recomended for better explaination.
+
+```python
+
+class BinaryTreeNode:
+    def __init__(self, data):
+        self.data = data
+        self.left = None
+        self.right = None
+
+
+class Result:
+    def __init__(self, node, is_ancestor):
+        self.node: BinaryTreeNode = node
+        self.is_ancestor: bool = is_ancestor
+
+
+def common_ancestor(root, p, q):
+    result = common_ancestor_helper(root, p, q)
+    if result.is_ancestor:
+        return result.node
+    return None
+
+
+def common_ancestor_helper(root, p, q):
+    if not root:
+        return Result(None, False)
+    if root == p and root == q:
+        return Result(root, True)
+    r_left = common_ancestor_helper(root.left, p, q)
+    if r_left.is_ancestor:
+        return r_left
+    r_right = common_ancestor_helper(root.right, p, q)
+    if r_right.is_ancestor:
+        return r_right
+    if r_left.node and r_right.node:
+        return Result(root, True)
+    elif root == p or root == q:
+        is_ancestor = r_left.node or r_right.node
+        return Result(root, is_ancestor)
+    else:
+        return Result(r_left.node if r_left.node else r_right.node, False)
+
+```
+Time complexity O(n), we touch each nodes once in worst case.
+Space complexity O(d) where d is the depth of the tree, recursion stack depth is equal to depth of the tree.
+</details>
+
+
+
