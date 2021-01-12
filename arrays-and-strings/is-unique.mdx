@@ -193,7 +193,7 @@ def isUnique(s):
     checker = 0
     for i in range(len(s)):
         index = ord(s[i])
-        if 65 <= index <= 90:
+        if 65 <= index <= 90: # check capitalization
             index += 32
         value = (checker & ((1 << index)))
         if value > 0:
