@@ -186,14 +186,15 @@ If it is, then we can return `False`. Otherwise, we set that character's bit to 
 
 <br />
 
-The time complexity is $$O(n)$$ and the space complexity is $$O(n)$$ because we're creating a new string on line 2.
+The time complexity is $$O(n)$$ and the space complexity is $$O(1)$$
 
 ```python
 def isUnique(s):
-    s = s.lower()
     checker = 0
     for i in range(len(s)):
-        index = ord(s[i]) - ord("a")
+        index = ord(s[i])
+        if 65 <= index <= 90:
+            index += 32
         value = (checker & ((1 << index)))
         if value > 0:
             return False
