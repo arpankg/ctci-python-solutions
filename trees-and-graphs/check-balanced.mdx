@@ -8,95 +8,113 @@
 
 # Question
 
-Implement a function to check if a binary tree is balanced, for the purpose of this question, a balancd tree is 
-defined to be a tree such that heights of the two subtrees of any node never differ by more than one.
+Implement a function to check if a binary tree is balanced.
+
+<br />
+
+A balanced tree is a tree where the heights of the two subtrees of any node never differ by more than one.
 
 ```
-
-InPut -                 6
-                     /      \
-                   3         9
-                 /   \      /  \
-                1     4    7    10
-                  \         \     \
-                   2         8     11
+Input -                 6
+                     /     \
+                   3        9
+                 /   \     /  \
+                1     4   7    10
+                  \        \     \
+                   2        8     11
 Output - True
 
-InPut -                 6
-                     /      \
-                   3         9
-                 /   \      /  
-                1     4    7    
-                  \         \     
-                   2         8    
+Input -                 6
+                     /     \
+                   3        9
+                 /   \     /  
+                1     4   7    
+                  \        \     
+                   2        8    
 Output - False
+Explanation - Node 9 is not balanced.
 ```
 
 <details>
   <summary>Brute Force Solution</summary>
 
-Traverse the entire tree, at each node get the height of left subtree and right subtree and check if they are balanced.
+We traverse the entire tree. For each node we get the height of the left subtree and right subtree. 
+
+<br />
+
+We check to make sure the two heights do not differ by more than than one.
+
+<br />
+
+The time complexity is $$O(n \log n)$$. This is because we are visiting every single node in the tree which takes $$O(n)$$ time. At **each** node, we're traversing it's children to get their heights. That takes an average of $$O(\log n)$$ time.
+
+<br />
+
+The space complexity is $$O(h)$$ where $$h$$ is the height of the tree. This is due to the space the call stack uses as we recurse through our tree.
+
     
 ```python
-
-def is_balanced(root: BinaryTreeNode) -> bool:
+def isBalanced(root: BinaryTreeNode) -> bool:
     if not root:
         return True
-    if abs(get_height(root.left) - get_height(root.right)) > 1:
+    if abs(getHeight(root.left) - getHeight(root.right)) > 1:
         return False
     else:
-        return is_balanced(root.left) and is_balanced(root.right)
+        return isBalanced(root.left) and isBalanced(root.right)
 
 
-def get_height(root):
+def getHeight(root):
     if not root:
         return -1
     else:
-        return max(get_height(root.left), get_height(root.right)) + 1
-    
+        return max(getHeight(root.left), getHeight(root.right)) + 1 
 ```
-Time complexity O(nlog(n)), each call to get_height takes log(n) time and we do it for all the nodes.
-Space complexity O(h)
+
+<a href="https://repl.it/@quastortech/Brute-Force-1#main.py" target="_blank">Here's a Python 3 REPL with the code.</a>
 </details>
 
-<br/>
+<br />
 
 <details>
   <summary>Optimized Solution</summary>
 
-Insight from get_height function in brute force soltuion is that instead of calculating the height for each node separately we can check 
-if the height is balanced while we recurse through the tree.
+  In the brute force solution, we visit every node in the tree and check the heights of the left and right subtree **for each node**. This results in a lot of repeated computation.
+
+  <br />
+
+  We can write a more efficient solution if we keep track of the heights **as we're traversing through the tree**.
+
+  <br />
+
+  We'll use a helper function, `_balanced` that takes in a node. Then, the helper function will find the if the left subtree is balanced **and** what the left subtree's height. The helper function will do the same for the right subtree.
+
+  <br />
+
+  If both the left and right subtree are balanced, then the function will look at the heights of the left and right subtrees and make sure that they are within 1.
+
+  <br />
+
+  If all these conditions are met, then the helper function knows that the current node is a balanced binary tree. **It will now calculate the height of the tree at the current node** by taking the `max` of the left subtree's height and the right subtree's height. Then, add `1` to account for the current node.
+
+  <br />
+
+  Then our helper function will return a boolean representing whether the current tree is balanced **and the current tree's height**.
+
+  <br />
+
+  The time complexity is $$O(n)$$ since we're visiting each node once. The space complexity is $$O(h)$$ where $$h$$ is the height of the tree.
 
 ```python
-
-import collections
-
-
-def is_balanced1(root: BinaryTreeNode) -> bool:
-    BalancedStatuswithHeight = collections.namedtuple(
-        "BalancedStatusWithHeight", ("balanced", "height")
-    )
-
-    def check_balanced(root: BinaryTreeNode) -> bool:
-        if not root:
-            return BalancedStatuswithHeight(True, -1)
-        else:
-            left = check_balanced(root.left)
-            if not left.balanced:
-                return left
-            right = check_balanced(root.right)
-            if not right.balanced:
-                return right
-
-            if abs(right.height - left.height) > 1:
-                return BalancedStatuswithHeight(False, 0)
-
-            return BalancedStatuswithHeight(True, max(left.height, right.height) + 1)
-
-    return check_balanced(root).balanced
-
-
+def isBalanced(root):
+    def _balanced(root):
+        if root == None:
+            return (True, 0)
+        leftBalanced, leftHeight = _balanced(root.left)
+        rightBalanced, rightHeight = _balanced(root.right)
+        if leftBalanced and rightBalanced and abs(leftHeight - rightHeight) < 2:
+            currentHeight = max(leftHeight, rightHeight) + 1
+            return (True, currentHeight)
+        return (False, None)
+    return _balanced(root)[0]
 ```
-Time complexity O(n), we visit all the nodes of the tree once.
-Space complexity O(h) where h is height of the tree, recursion stack depth is equal to height of the tree.
-</details>  
+</details>
