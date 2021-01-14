@@ -1,0 +1,100 @@
+# Read the solution [Here](https://quastor.org/cracking-the-coding-interview/trees-and-graph/bst-sequence)
+
+# Bst Sequence
+
+## Cracking The Coding Interview 4.9
+
+<br/>
+
+# Question
+
+A binary search tree was created by traversing through an array from left to right and inserting each element. Given a 
+binary tree with distinct elements, print all possible arrays that could have led to this tree. 
+
+```
+
+InPut -                6
+                     /    \
+                    3      9
+
+Output -[[6, 3, 9],
+         [6, 9, 3]]
+
+InPut -              6
+                   /    \
+                  3      9
+                /   \      
+               1     4       
+
+Output -   [[6, 3, 1, 4, 9],
+            [6, 3, 1, 9, 4],
+            [6, 3, 9, 1, 4],
+            [6, 9, 3, 1, 4],
+            [6, 3, 4, 1, 9],
+            [6, 3, 4, 9, 1],
+            [6, 3, 9, 4, 1],
+            [6, 9, 3, 4, 1]]
+
+```
+
+<details>
+  <summary>Solutiion</summary>
+
+Thinking recursive is the key to the solution of this problem, Let's say you have all the sequences for left subtree(left_sequences)
+and all the sequences for right subtree(right_sequences) you can get the sequences for that tree by weaving the left_sequences with
+right_esquences and then prepending root to all of them. 
+    
+```python
+from collections import deque
+
+def all_sequences(root):
+    result = []
+    if not root:
+        result.append(deque())
+        return result
+
+    # get the sequences from left and right subtrees
+    left_sequences = all_sequences(root.left)
+    right_sequences = all_sequences(root.right)
+
+    # weave together each sequence from left sequece to right sequence
+    for left in left_sequences:
+        for right in right_sequences:
+            weaved = []
+            weave_lists(left, right, weaved, deque([root.data]))
+            result.extend(weaved)
+
+    return result
+
+
+def weave_lists(first, second, results, prefix):
+    if not first or not second:
+        # deep clone the prefix since it will be changed
+        # once we go back in recursion
+        result = prefix.copy()
+        result.extend(first)
+        result.extend(second)
+        results.append(result)
+        return
+
+    # remove one element from the begining of the list and
+    # append it to prefix and recurse, and once returned back from
+    # from recusrion add the element back to begining of the list
+    # remove  it from prefix.
+    head_first = first.popleft()
+    prefix.append(head_first)
+    weave_lists(first, second, results, prefix)
+    first.appendleft(head_first)
+    prefix.pop()
+
+    # do the exact steps for second list.
+    head_second = second.popleft()
+    prefix.append(head_second)
+    weave_lists(first, second, results, prefix)
+    second.appendleft(head_second)
+    prefix.pop()
+
+    
+```
+Time complexity exponential, Space complexity exponetial(considering the results list)
+</details>
