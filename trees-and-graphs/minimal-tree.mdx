@@ -2,78 +2,96 @@
 
 # Minimal Tree
 
-## Cracking The Coding Interview 4.2
+## Cracking the Coding Interview 4.2
 
-<br/>
+<br />
 
 # Question
 
-Given a sorted (increasing order) array with uniq integer elements, write an algorithm to create binary search tree with minimal height
+You are given a **sorted** array with unique integer elements as input.
 
-```
-Input - [1,2,3]
-Output -   2
-          / \
-         1   3
+<br />
 
-Input -  [1,2,3,4,5,6,7,8,9,10,11]
-Output -                6
-                     /      \
-                   3         9
-                 /   \      /  \
-                1     4    7    10
-                  \     \   \     \
-                   2     5   8     11
+Write an algorithm that creates a binary search tree with minimal height from that array.
 
-```
+<br />
 
 <details>
-  <summary>Solution One</summary>
+  <summary>Solution</summary>
 
-Insert all elements of the array one by one to a self balancing binary search tree like Red-Black tree or AVL tree.
+This question is actually quite a bit easier than it may seem. We can solve it using recursion!
+
+<br />
+
+We first find the middle element of the sorted array. All the numbers before will be less than this element and all the numbers after will be greater than (because the array is sorted).
+
+<br />
+
+Additionally, the number of elements before our middle will be approximately equal to the number of elements after our middle (because we've picked the middle of the list).
+
+<br />
+
+So now, we can create the root node of our BST using the middle element.
+
+<br />
+
+Then, we recursively call our function to create another BST for all the elements on the left (all the elements less than our middle). That BST becomes our left child.
+
+<br />
+
+We recursively call our function again to create a BST for all the elements on the right (all the elements greater than our middle). That BST becomes our right child.
+
+<br />
+
+The base case for our recursive function will be if we get an empty array. Then we can just return `None`.
+
+<br />
+
+After creating both the left and right subtrees, we can return our tree!
+
+<br />
+
+The time complexity is $$O(n)$$.
+
+<br />
+
+This is because our function can be represented by the recurrence
+
+<br />
+
+$$T(n) = 2 \cdot T(\dfrac{n}{2}) + c$$
+
+<br />
+
+Using the Master Method, we know that means our time complexity is $$O(n)$$.
+
+<br />
+
+Learn about the Master Method <a href="https://quastor.org/learn/time-complexity/master-method" target="_blank">here.</a>
+
+<br />
+
+The space complexity is also $$O(n)$$.
     
 ```python
-
-def build_minimal_height_bst(nums):
-    # here SelfBalancingBST would be your implementaion of BST with self balancing property.
-    tree = SelfBalancingBST()
-    for item in nums:
-        tree.insert(item)
-    return tree
-
-```
-Time complexity O(nlog(n)), each insertion takes log(n) time and we do it for all elements of the array.
-Space complexity O(1)
-</details>
-
-<br/>
-
-<details>
-  <summary>Solution Two</summary>
-
-Since the array is sorted pick mid element as root and recursively build left subtree with elements lesser than mid and right subtree with the 
-elements greater than the mid.
-
-```python
-from typing Import List
-
-
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.right = None
+class TreeNode:
+    def __init__(self, val = None):
+        self.val = val
         self.left = None
+        self.right = None
 
-
-def build_minimal_height_bst(nums: List[int], left: int, right: int) -> Node:
-    if left > right:
+def createBST(nums):
+    if len(nums) == 0:
         return None
-    mid = left + (right - left) // 2
-    root = Node(nums[mid])
-    root.left = build_minimal_height_bst(nums, left, mid - 1)
-    root.right = build_minimal_height_bst(nums, mid + 1, right)
+    
+    middle = len(nums) // 2
+    
+    root = TreeNode(nums[middle])
+    root.left = createBST(nums[:middle])
+    root.right = createBST(nums[middle + 1:])
+    
     return root
 ```
-Time complexity O(n), we visit all the elements of the array once.
-Space complexity O(h) where h is height of the tree, recursion stack depth is equal to height of the tree.
-</details>  
+
+<a href="https://repl.it/@quastortech/Solution-4#main.py" target="_blank">Here's a Python 3 REPL with the code.</a>
+</details>
