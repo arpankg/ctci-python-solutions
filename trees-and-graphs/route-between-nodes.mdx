@@ -1,6 +1,6 @@
 # Read the solution [Here](https://quastor.org/cracking-the-coding-interview/trees-and-graph/route-between-nodes)
 
-# Route Between Nodes
+# Route Between Nodes 
 
 ## Cracking The Coding Interview 4.1
 
@@ -8,82 +8,66 @@
 
 # Question
 
-Given a directed graph, design an algorithm to find out whether there is a route between two nodes
+You are given a directed graph. You're also given a `start` node and an `end` node.
 
-Example graph
+<br />
 
-<img
-  src="./assets/route-between-nodes.png"
-  alt="Directed graph"
-  height="200"
-  width="400"
-  layout="responsive"
-/>
+Write an algorithm to check whether there is a route between the two nodes.
 
-```
-
-Input -  start = A, end = F
-Output - True
-
-Input - start = A, end = C
-Output - False
-
-```
+<br />
 
 <details>
-  <summary>BFS Solution</summary>
+  <summary> Solution</summary>
 
-Start a breadth-fist-search from the start node, check if the end node is found. keep track of visited nodes to avoide cycles and repetition of nodes.
+We can solve this question using any type of graph traversal algorithm. Breadth-First Search or Depth-First Search would both work optimally.
+
+<br />
+
+We start our graph traversal at the `start` node. If we can reach the `end` node, then we return `True`, otherwise `False.`
+
+<br />
+
+Both a BFS and a DFS will take $$O(\lvert V \rvert + \lvert E \rvert)$$ time and $$O(\lvert V \rvert)$$ space.
+
+<br />
+
+We'll be implementing our algorithm with a Depth First Traversal.
+
+<br />
+
+We create a `visited` set that keeps track of which nodes we've already visited in our DFS.
+
+<br />
+
+We implement our DFS recursively, where we first check if the current node is equivalent to the `end` node (the node we're searching for).
+
+<br />
+
+If it is, then we can return `True`.
+
+<br />
+
+Otherwise, we recurse through all the neighbors of the current node and then run a depth first search on each of the neighbors. Of course, we first check to make sure we haven't already visited the neighbor (otherwise we would have an infinite loop in our program).
     
 ```python
-from queue import Queue
-from collections import defaultdict
-from typing import DefaultDict, List
+def findRoute(graph, start, end):
+    visited = set()
+    return dfs(graph, visited, start, end)
 
-def search(graph: DefaultDict ,start : str,end : str) -> bool:
-    visited_nodes = set()
-    q = Queue()
-    q.put(start)
-    while not q.empty():
-        curr_node = q.get()
-        if curr_node == end:
+  
+def dfs(graph, visited, node, end):
+    if node == end:
+        return True
+    
+    for neighbor in graph[node]:
+        if neighbor in visited:
+            continue
+        visited.add(neighbor)
+        if dfs(graph, visited, neighbor, end):
             return True
-        visited_nodes.add(curr_node)
-        for adj_node in graph[curr_node]:
-            if adj_node not in visited_nodes:
-                q.put(adj_node)
-
+    
     return False
-
 ```
-Time complexity O(n), we visit all the nodes once in worst case.
-Space complexity O(n), a node might be connected to all the nodes, in that case queue will have all nodes.
+
+<a href="https://repl.it/@quastortech/DFS#main.py" target="_blank">Here's a Python 3 REPL with the code.</a>
 </details>
-
-<br/>
-
-<details>
-  <summary>DFS Solution</summary>
-
-Start a depth-first-search from the start, check if the end node is found. keep track of visited nodes to avoid cycles and repetition of nodes.
-
-```python
-from queue import Queue
-from collections import defaultdict
-from typing import DefaultDict, List
-
-def search(graph : DefaultDict, start : str, end: str) ->bool:
-    def dfs_search(graph,curr_node,end,visited):
-        if curr_node == end:
-            return True
-        else:
-            for adj_node in graph[curr_node]:
-                if adj_node not in visited:
-                    visited.add(curr_node)
-                    return True if  dfs_search(graph,adj_node, end,visited) else False
-    return dfs_search(graph, start, end, set(start))
-
-```
-Time complexity O(n), we visit all the nodes once in worst case.
-Space complexity O(n), because of the recursion stack.
-</details>  
