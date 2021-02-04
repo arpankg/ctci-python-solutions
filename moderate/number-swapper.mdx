@@ -1,0 +1,37 @@
+# Read the Solution [Here]()
+
+# Number Swapper
+
+## Cracking the Coding Interview (CTCI) 16.1
+
+<br />
+
+## Question
+
+Write a function to swap a number in place (that is, without using temporary variables).
+
+<details>
+  <summary>Solution</summary>
+
+  When we think about swapping variables, we immediately think of introducing a temporary variable to hold the current value while we replace the value of another variable. But if the variable we were swapping were of integer types, mathematically speaking, there is no need for a temporary variable.
+
+  Following simple logic behind addition and subtraction, we can see that ```a - (a + b) = b```. Using this method, we can swap integers without having to use a temporary variable to hold the value of a variable being swapped. 
+
+  Given ```a = 3``` and ```b = 2``` and the need to swap their values, we'd do:
+  - set a as ```a - b```, a is now 1
+  - set b as ```a + b```, b is now 3 (remember a is 1 so 1+2 = 3), b is "swapped"
+  - set a as ```b - a``` a then becomes now 2
+  All we did was used the theory of differences to our advantage. I recommend you run through this algorithm a couple of times with different values (what happens if ```a > b```?) to get a solid understand of it.  
+
+
+```python
+def numberSwapper(a, b):
+    a = a - b
+    b = a + b
+    a = b - a 
+```
+
+In terms of time complexity, it's $$O(1)$$ and space complexity is $$O(1)$$, you could argue that the conventional way of swapping variables would have same time and space complexity but the question clearly states that no addtional variables are to be used. 
+
+
+</details>
