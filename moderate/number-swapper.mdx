@@ -1,4 +1,4 @@
-# Read the Solution [Here]()
+# Read the Solution [Here](https://quastor.org/cracking-the-coding-interview/moderate/number-swapper)
 
 # Number Swapper
 
@@ -8,30 +8,92 @@
 
 ## Question
 
-Write a function to swap a number in place (that is, without using temporary variables).
+Write a function to swap a number in place. You cannot use temporary variables.
+
+```python
+# Swap the values for a and b without using temporary variables!
+a = 4
+b = 6
+# code to swap a and b
+print(a) # 6
+print(b) # 4
+```
 
 <details>
   <summary>Solution</summary>
 
-  When we think about swapping variables, we immediately think of introducing a temporary variable to hold the current value while we replace the value of another variable. But if the variable we were swapping were of integer types, mathematically speaking, there is no need for a temporary variable.
+  If we were allowed to use temporary variables, this question would be pretty easy...
 
-  Following simple logic behind addition and subtraction, we can see that ```a - (a + b) = b```. Using this method, we can swap integers without having to use a temporary variable to hold the value of a variable being swapped. 
+  ```python
+  temp = a 
+  a = b
+  b = temp
+  ```
 
-  Given ```a = 3``` and ```b = 2``` and the need to swap their values, we'd do:
-  - set a as ```a - b```, a is now 1
-  - set b as ```a + b```, b is now 3 (remember a is 1 so 1+2 = 3), b is "swapped"
-  - set a as ```b - a``` a then becomes now 2
-  All we did was used the theory of differences to our advantage. I recommend you run through this algorithm a couple of times with different values (what happens if ```a > b```?) to get a solid understand of it.  
+  But we can't use a temporary variable.
 
+  <br />
 
-```python
-def numberSwapper(a, b):
-    a = a - b
-    b = a + b
-    a = b - a 
-```
+  Instead, we can solve this question with some clever algebra!
 
-In terms of time complexity, it's $$O(1)$$ and space complexity is $$O(1)$$, you could argue that the conventional way of swapping variables would have same time and space complexity but the question clearly states that no addtional variables are to be used. 
+  <br />
 
+  To make this easier to understand, we'll give you the solution in Python first! Then, we'll explain how it works.
 
+  ```python
+  # Swap the values for a and b without using temporary variables!
+  a = 4
+  b = 6
+  a = a - b
+  b = a + b
+  a = b - a
+  print(a) # 6
+  print(b) # 4
+  ```
+
+  <br />
+
+  We'll use $a_0$ to represent the original value of $a$ and $b_0$ to represent the original value of $b$.
+
+  < br />
+
+  First, we set $a = a_0 - b_0$. That's line 4. 
+
+  <br />
+
+  Then, we set $b = a + b_0$. That's line 5.
+
+  <br />
+
+  In other words, this means we're setting $b = (a_0 - b_0) + b_0$. You can do the algebra to see that means we're setting $b = a_0$
+
+  <br />
+
+  Finally, we set $a = b - a$. That's line 6.
+
+  <br />
+
+  Now remember that in our previous two equations, we set $a = a_0 - b_0$ and $b = (a_0 - b_0) + b_0$.
+
+  
+  Therefore, we can substitute $b$ and $a$ in $b - a$ to get $a = ((a_0 - b_0) + b_0) - (a_0 - b_0)$.
+
+  <br />
+
+  You can simplify the algebra in that expression to get $a = a_0 - (a_0 - b_0)$. 
+  
+  Simplify that further to get $a = b_0$
+
+  <br />
+
+  The time complexity and space complexity are both $$O(1)$$.
+
+  <br />
+
+  
+  Now, I know what you're wondering. How the hell am I supposed to figure this out in an interview?
+
+  <br />
+
+  Frankly, I have no idea. I don't write the interview questions, I'm just writing the solutions. If you're an interviewer and you're thinking of asking this question, please don't!
 </details>

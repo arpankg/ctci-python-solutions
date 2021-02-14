@@ -124,7 +124,7 @@ Detailed explanations to the coding interview questions in CTCI. The solutions a
 
 | Problem Number | Problem Name | Status |
 | --- | --- | --- |
-| 16.1 | Number Swapper | ❌ |
+| 16.1 | Number Swapper | [Read Solution ✅](https://quastor.org/cracking-the-coding-interview/moderate/number-swapper) |
 | 16.2 | Word Frequencies | ❌ |
 | 16.3 | Intersection | ❌ |
 | 16.4 | Tic Tac Win | ❌ |
