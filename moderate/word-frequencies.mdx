@@ -1,89 +1,118 @@
-# Read the Solution [Here]()
+# Read the Solution [Here](https://quastor.org/cracking-the-coding-interview/moderate/word-frequencies)
+
+# Word Frequencies
 
 ## Cracking the Coding Interview (CTCI) 16.2
 
 <br />
 
-# Question
+## Question
 
-Design a method to find the frequency of occurances of any given word in a book? What if we were running this algorithm multiple times?
+Design a method that finds the frequency of occurances of any given word in a book. How would you change the method if we had to run it multiple times for different query words?
 
-
-<details>
-  <summary>Hint</summary>
-
-  Always be careful with questions like there where the solution is simple but there might be small details you need to think about. Asking follow up questions to clear things up is a must. Think about corner cases, is ```Hi!``` the same word as ```hi```? How would you separate them?
-
-</details>
+<br />
 
 <details>
   <summary>Single Query Solution</summary>
 
-  Let's tackle it without the follow up of "running this algorithm multiple times". If given a string, how would you count frequency of a certain word? Brute force option of scanning through all words in the string is the most optimal here. 
+  We'll assume that the book is a list of words.
 
-  - Set ```count``` to 0
-  - Go through each word in the "book"
-  - Check if the word is the same as word to count the frequency of (methods like .lower() will have to be used if case is to be ignored - something to check with your interviewer)
-  - If words match, increment count
+  <br />
+
+  If we want to check for a word and we're only running the method once, the most efficient way is to just iterate through the list of words and see if any of them are equivalent to the word we're looking for.
+
+  <br />
+
+  We'll assume that capitalization doesn't matter, but this is something that you should check with your interviewer.
 
 ```python
 import string  # Importing standard library is okay during interview
 
-def single_query(book: List[str], word: str):
+def getWordFrequency(book: List[str], word: str):
     count = 0
-
+    word = word.trim().lower()
     for w in book:
-        w = w.translate(str.maketrans('', '', string.punctuation))  # Remove any punctuations such as ```,``` and ```.``` from the word
-        if word == w.trim().lower():  # this could be .upper() too, depends on the use case
+        if word == w.trim().lower():
             count += 1
     
     return count
   ```
+
+  This code runs in $$O(n)$$ time and takes $$O(1)$$ space.
+
 </details>
 
-
+<br />
 
 <details>
-  <summary>Multiple Use Solution</summary>
+  <summary>Multiple Query Solution</summary>
 
-  Solution above works just fine if you were to run the query once and forget about it. But what happens if you were asked to check frequency of each word in the book? Is going through the entire book worth it? Probably not. 
+  The previous solution works great when you're only calling the method a few times.
 
-  Whenever you think of storing multiple counts, think of hashmaps or dictionaries in Python. It's a very efficient data structure to store key value pairs. Here, our key can be each word and value can be their counts.
+  <br />
 
-  - Create dictionary
-    - Initialise the dictionary
-    - Go through each word in the "book"
-    - Strip off punctuations and spaces
-    - Increment word count
+  However, as you start calling the method many times for different words, your method will have to search the entire book on each call.
 
+  <br />
 
-  - Find the frequency
-      - Return value of the word in dict if exists 
+  Now it makes sense to do some preprocessing on the book so that each call to the method can be done faster.
+
+  <br />
+
+  We can create a data structure that keeps track of the number of occurrences of every word in our book. This can be done with a hash table (or dictionary).
+
+  <br />
+
+  This way, whenever we want to query the occurrence of a specific word, we can just search our hash table and return the answer in constant time.
+
+  <br />
+
+  Creating the data structure is quite simple. We create our dictionary and then iterate through the book string. If a word is already in our dictionary, then we update it's count by 1. Otherwise, we add it to the dictionary with a count of one.
+
+  <br />
+
+  Then, our `getWordFrequency` function will just query the dictionary for the number of occurrences of the given word and return the answer in $$O(1)$$ time.
 
 ```python
-# Importing standard library is okay during interview
-import string  
-from collections import defaultdict  
-
-def multiple_queries(book: List[str], word: str):
+class wordFrequency:
+    def __init__(self, book):
+        self.wordCounts = self.setupDictionary(book)
     
-    # this saves us from the logic of "+1 if word exists otherwise set to 0". defaultdict will initialise the key to have value of 0 if it currently doesn't exist in the dict
-    word_count = defaultdict(int)  
-
-    for w in book:
-        w = w.translate(str.maketrans('', '', string.punctuation))  # Remove any punctuations such as ```,``` and ```.``` from the word
-        if word == w.lower():  # this could be .upper() too, depends on the use case
-            word_count[word] += 1
+    def setupDictionary(self, book):
+        wordCounts = {}
+        for w in book:
+            w = w.trim().lower()
+            if w == "":
+                continue
+            if w in wordCounts:
+                wordCounts[w] += 1
+            else:
+                wordCounts[w] = 1
+        return wordCounts
     
-    return word_count
-
-
-def get_frequency(word_count, word):
-    return word_count[word] if word in word_count else 0
+    def getWordFrequency(self, word):
+        word = word.lower()
+        if word in self.wordCounts:
+            return self.wordCounts[word]
+        
+        return 0
 ```
 </details>
 
+<br />
+
 <details>
   <summary>Further Enhancement</summary>
-  This is a good opportunity for you to show your knowledge of caching to your interviewer. It could be as simple as saving the python dict object to disk. Quickest and simplest way to do this would be to use ```joblib``` package where you can ```.dump()``` a variable to disk or ```.load()``` into a variable from disk. If multiple books need to be cached, this method might be the best option. 
-</details>
+
+
+ Currently, the word counts for our books are stored in volatile memory. If our program crashes or we shut off the computer, we'll lose all the word counts.
+
+  <br />
+
+  You can fix this by using a key-value database like Redis. Redis is in-memory (so reads and writes are quite fast) and can be configured to be persistent so it writes to disk at regular intervals.
+
+  <br />
+
+  That way, you won't have to re-index your books if your program crashes.
+
+  </details>
